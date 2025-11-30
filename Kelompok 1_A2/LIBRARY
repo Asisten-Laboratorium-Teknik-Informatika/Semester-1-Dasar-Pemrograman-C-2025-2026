@@ -20,7 +20,7 @@ const char *F_BUKU = "buku.txt";
 const char *F_LOAN = "data_pinjam.txt";
 const char *F_HIST = "history.txt";
 
-// struktur buku
+// struktur buku 
 typedef struct {
     int id;
     char judul[MAX_NAME];
