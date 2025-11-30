@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#ifdef _WIN32
+  #define STRCASECMP _stricmp
+#else
+  #define STRCASECMP strcasecmp
+#endif
+
+#define MAX_BOOK 600
+#define MAX_NAME 200
+#define MAX_LOAN 600
+
+/* FILES */
+const char *F_BUKU = "buku.txt";
+const char *F_LOAN = "data_pinjam.txt";
+const char *F_HIST = "history.txt";
+
+/* STRUKTUR BUKU */
+typedef struct {
+    int id;
+    char judul[MAX_NAME];
+    char jenis[50];
+    int stok;
+} Buku;
+
+/* STRUKTUR PINJAMAN */
+typedef struct {
+    char user[50];
+    int idBuku;
+    long long pinjam_ts;
+    long long due_ts;
+} Pinjam;
+
+/* ARRAY MEMORY */
+Buku buku[MAX_BOOK];
+int jumlahBuku = 0;
+
+Pinjam loan[MAX_LOAN];
+int jumlahLoan = 0;
+
+/* LOADER DATASET */
+
+void loadBuku() {
+    FILE *fp = fopen(F_BUKU, "r");
+    if (!fp) {
+        printf("File buku.txt tidak ditemukan!\n");
+        exit(1);
+    }
+
+    jumlahBuku = 0;
+
+    char line[512];
+    while (fgets(line, sizeof(line), fp)) {
+        if (strlen(line) < 5) continue;
+
+        int id, stok;
+        char judul[200], jenis[50];
+
+        if (sscanf(line, "%d;%199[^;];%49[^;];%d",
+                   &id, judul, jenis, &stok) == 4)
+        {
+            buku[jumlahBuku].id = id;
+            strcpy(buku[jumlahBuku].judul, judul);
+            strcpy(buku[jumlahBuku].jenis, jenis);
+            buku[jumlahBuku].stok = stok;
+            jumlahBuku++;
+        }
+    }
+
+    fclose(fp);
+}
+
+/*  SAVE DATASET  */
+
+void saveBuku() {
+    FILE *fp = fopen(F_BUKU, "w");
+    if (!fp) return;
+
+    for (int i = 0; i < jumlahBuku; i++) {
+        fprintf(fp, "%d;%s;%s;%d\n",
+                buku[i].id,
+                buku[i].judul,
+                buku[i].jenis,
+                buku[i].stok);
+    }
+
+    fclose(fp);
+}
+
+/*  LOADER PINJAMAN  */
+
+void loadLoan() {
+    FILE *fp = fopen(F_LOAN, "r");
+    if (!fp) return;
+
+    jumlahLoan = 0;
+
+    char line[256];
+    while (fgets(line, sizeof(line), fp)) {
+        char user[50];
+        int id;
+        long long ts, due;
+
+        if (sscanf(line, "%49[^;];%d;%lld;%lld",
+                   user, &id, &ts, &due) == 4)
+        {
+            strcpy(loan[jumlahLoan].user, user);
+            loan[jumlahLoan].idBuku = id;
+            loan[jumlahLoan].pinjam_ts = ts;
+            loan[jumlahLoan].due_ts = due;
+            jumlahLoan++;
+        }
+    }
+
+    fclose(fp);
+}
+
+/*  SAVE PINJAMAN  */
+
+void saveLoan() {
+    FILE *fp = fopen(F_LOAN, "w");
+    if (!fp) return;
+
+    for (int i = 0; i < jumlahLoan; i++) {
+        fprintf(fp, "%s;%d;%lld;%lld\n",
+                loan[i].user,
+                loan[i].idBuku,
+                loan[i].pinjam_ts,
+                loan[i].due_ts);
+    }
+
+    fclose(fp);
+}
+
+/*  HISTORY  */
+
+void historyWrite(const char *aksi, const char *user, const char *judul) {
+    FILE *fp = fopen(F_HIST, "a");
+    if (!fp) return;
+
+    time_t t = time(NULL);
+    fprintf(fp, "%s | %s | %s | %s\n",
+            aksi, user, judul, ctime(&t));
+
+    fclose(fp);
+}

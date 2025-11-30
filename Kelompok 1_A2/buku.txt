@@ -1,0 +1,500 @@
+1;Fiksi Buku 001;Fiksi;5
+2;Fiksi Buku 002;Fiksi;4
+3;Fiksi Buku 003;Fiksi;6
+4;Fiksi Buku 004;Fiksi;3
+5;Fiksi Buku 005;Fiksi;7
+6;Fiksi Buku 006;Fiksi;2
+7;Fiksi Buku 007;Fiksi;8
+8;Fiksi Buku 008;Fiksi;4
+9;Fiksi Buku 009;Fiksi;5
+10;Fiksi Buku 010;Fiksi;3
+11;Fiksi Buku 011;Fiksi;6
+12;Fiksi Buku 012;Fiksi;2
+13;Fiksi Buku 013;Fiksi;4
+14;Fiksi Buku 014;Fiksi;5
+15;Fiksi Buku 015;Fiksi;3
+16;Fiksi Buku 016;Fiksi;4
+17;Fiksi Buku 017;Fiksi;6
+18;Fiksi Buku 018;Fiksi;2
+19;Fiksi Buku 019;Fiksi;5
+20;Fiksi Buku 020;Fiksi;3
+21;Fiksi Buku 021;Fiksi;4
+22;Fiksi Buku 022;Fiksi;7
+23;Fiksi Buku 023;Fiksi;6
+24;Fiksi Buku 024;Fiksi;3
+25;Fiksi Buku 025;Fiksi;5
+26;Fiksi Buku 026;Fiksi;2
+27;Fiksi Buku 027;Fiksi;6
+28;Fiksi Buku 028;Fiksi;4
+29;Fiksi Buku 029;Fiksi;5
+30;Fiksi Buku 030;Fiksi;3
+31;Fiksi Buku 031;Fiksi;6
+32;Fiksi Buku 032;Fiksi;2
+33;Fiksi Buku 033;Fiksi;4
+34;Fiksi Buku 034;Fiksi;5
+35;Fiksi Buku 035;Fiksi;3
+36;Fiksi Buku 036;Fiksi;6
+37;Fiksi Buku 037;Fiksi;2
+38;Fiksi Buku 038;Fiksi;7
+39;Fiksi Buku 039;Fiksi;4
+40;Fiksi Buku 040;Fiksi;5
+41;Fiksi Buku 041;Fiksi;3
+42;Fiksi Buku 042;Fiksi;6
+43;Fiksi Buku 043;Fiksi;2
+44;Fiksi Buku 044;Fiksi;5
+45;Fiksi Buku 045;Fiksi;4
+46;Fiksi Buku 046;Fiksi;6
+47;Fiksi Buku 047;Fiksi;3
+48;Fiksi Buku 048;Fiksi;5
+49;Fiksi Buku 049;Fiksi;4
+50;Fiksi Buku 050;Fiksi;7
+51;Fiksi Buku 051;Fiksi;6
+52;Fiksi Buku 052;Fiksi;3
+53;Fiksi Buku 053;Fiksi;5
+54;Fiksi Buku 054;Fiksi;4
+55;Fiksi Buku 055;Fiksi;6
+56;Fiksi Buku 056;Fiksi;3
+57;Fiksi Buku 057;Fiksi;4
+58;Fiksi Buku 058;Fiksi;2
+59;Fiksi Buku 059;Fiksi;5
+60;Fiksi Buku 060;Fiksi;3
+61;Fiksi Buku 061;Fiksi;6
+62;Fiksi Buku 062;Fiksi;4
+63;Fiksi Buku 063;Fiksi;2
+64;Fiksi Buku 064;Fiksi;5
+65;Fiksi Buku 065;Fiksi;6
+66;Fiksi Buku 066;Fiksi;3
+67;Fiksi Buku 067;Fiksi;4
+68;Fiksi Buku 068;Fiksi;2
+69;Fiksi Buku 069;Fiksi;5
+70;Fiksi Buku 070;Fiksi;3
+71;Fiksi Buku 071;Fiksi;4
+72;Fiksi Buku 072;Fiksi;6
+73;Fiksi Buku 073;Fiksi;2
+74;Fiksi Buku 074;Fiksi;5
+75;Fiksi Buku 075;Fiksi;3
+76;Fiksi Buku 076;Fiksi;4
+77;Fiksi Buku 077;Fiksi;2
+78;Fiksi Buku 078;Fiksi;5
+79;Fiksi Buku 079;Fiksi;4
+80;Fiksi Buku 080;Fiksi;6
+81;Fiksi Buku 081;Fiksi;3
+82;Fiksi Buku 082;Fiksi;4
+83;Fiksi Buku 083;Fiksi;2
+84;Fiksi Buku 084;Fiksi;6
+85;Fiksi Buku 085;Fiksi;5
+86;Fiksi Buku 086;Fiksi;3
+87;Fiksi Buku 087;Fiksi;4
+88;Fiksi Buku 088;Fiksi;2
+89;Fiksi Buku 089;Fiksi;6
+90;Fiksi Buku 090;Fiksi;4
+91;Fiksi Buku 091;Fiksi;2
+92;Fiksi Buku 092;Fiksi;5
+93;Fiksi Buku 093;Fiksi;3
+94;Fiksi Buku 094;Fiksi;4
+95;Fiksi Buku 095;Fiksi;6
+96;Fiksi Buku 096;Fiksi;5
+97;Fiksi Buku 097;Fiksi;3
+98;Fiksi Buku 098;Fiksi;4
+99;Fiksi Buku 099;Fiksi;2
+100;Fiksi Buku 100;Fiksi;6
+101;Matematika Dasar;Pelajaran;7
+102;Fisika Dasar;Pelajaran;6
+103;Kimia Dasar;Pelajaran;5
+104;Biologi Dasar;Pelajaran;4
+105;Geografi Umum;Pelajaran;6
+106;Sejarah Indonesia;Pelajaran;5
+107;Sosiologi SMA;Pelajaran;7
+108;Ekonomi Mikro;Pelajaran;5
+109;Ekonomi Makro;Pelajaran;4
+110;Pendidikan Pancasila;Pelajaran;6
+111;Bahasa Indonesia SMA;Pelajaran;7
+112;Bahasa Inggris SMA;Pelajaran;6
+113;Matematika Lanjutan;Pelajaran;5
+114;Fisika Modern;Pelajaran;4
+115;Kimia Organik;Pelajaran;6
+116;Biologi Molekuler;Pelajaran;5
+117;Geografi Lanjutan;Pelajaran;4
+118;Sejarah Dunia;Pelajaran;6
+119;Sosiologi Lanjutan;Pelajaran;5
+120;Ekonomi Internasional;Pelajaran;4
+121;Matematika Statistika;Pelajaran;6
+122;Fisika Kuantum;Pelajaran;5
+123;Kimia Analitik;Pelajaran;6
+124;Biologi Sel;Pelajaran;4
+125;Geografi Fisik;Pelajaran;5
+126;Sejarah Eropa;Pelajaran;6
+127;Sosiologi Politik;Pelajaran;5
+128;Ekonomi Manajemen;Pelajaran;4
+129;Akuntansi Dasar;Pelajaran;6
+130;Matematika Persamaan;Pelajaran;5
+131;Fisika Gelombang;Pelajaran;4
+132;Kimia Fisik;Pelajaran;6
+133;Biologi Hewan;Pelajaran;5
+134;Geografi Iklim;Pelajaran;4
+135;Sejarah Asia;Pelajaran;6
+136;Sosiologi Keluarga;Pelajaran;5
+137;Ekonomi Digital;Pelajaran;6
+138;Akuntansi Keuangan;Pelajaran;4
+139;Matematika Geometri;Pelajaran;6
+140;Fisika Termodinamika;Pelajaran;5
+141;Kimia Material;Pelajaran;4
+142;Biologi Tumbuhan;Pelajaran;5
+143;Geografi Wilayah;Pelajaran;6
+144;Sejarah Afrika;Pelajaran;4
+145;Sosiologi Pendidikan;Pelajaran;6
+146;Ekonomi Publik;Pelajaran;5
+147;Akuntansi Pajak;Pelajaran;4
+148;Matematika Logika;Pelajaran;6
+149;Fisika Optik;Pelajaran;5
+150;Kimia Biokimia;Pelajaran;6
+151;Biologi Ekologi;Pelajaran;5
+152;Geografi Politik;Pelajaran;4
+153;Sejarah Amerika;Pelajaran;6
+154;Sosiologi Masyarakat;Pelajaran;5
+155;Ekonomi Moneter;Pelajaran;4
+156;Akuntansi Lanjutan;Pelajaran;6
+157;Matematika Integral;Pelajaran;5
+158;Fisika Nuklir;Pelajaran;4
+159;Kimia Polimer;Pelajaran;5
+160;Biologi Genetika;Pelajaran;6
+161;Geografi Sosial;Pelajaran;5
+162;Sejarah Kerajaan Nusantara;Pelajaran;6
+163;Sosiologi Industri;Pelajaran;5
+164;Ekonomi Pembangunan;Pelajaran;4
+165;Akuntansi Perbankan;Pelajaran;6
+166;Matematika Aljabar Linear;Pelajaran;5
+167;Fisika Kinematika;Pelajaran;4
+168;Kimia Termodinamika;Pelajaran;6
+169;Biologi Anatomi;Pelajaran;7
+170;Geografi Benua;Pelajaran;4
+171;Sejarah Revolusi Dunia;Pelajaran;6
+172;Sosiologi Sosial Budaya;Pelajaran;5
+173;Ekonomi Industri;Pelajaran;4
+174;Akuntansi Pemerintahan;Pelajaran;6
+175;Matematika Probabilitas;Pelajaran;5
+176;Fisika Listrik Magnet;Pelajaran;4
+177;Kimia Elektro;Pelajaran;6
+178;Biologi Mikroorganisme;Pelajaran;5
+179;Geografi Indonesia;Pelajaran;7
+180;Sejarah Modern;Pelajaran;5
+181;Sosiologi Komunikasi;Pelajaran;4
+182;Ekonomi Kreatif;Pelajaran;6
+183;Akuntansi Audit;Pelajaran;5
+184;Matematika Kalkulus;Pelajaran;6
+185;Fisika Mekanika;Pelajaran;4
+186;Kimia Anorganik;Pelajaran;5
+187;Biologi Evolusi;Pelajaran;6
+188;Geografi Lingkungan;Pelajaran;7
+189;Sejarah Kemerdekaan Indonesia;Pelajaran;6
+190;Sosiologi Hukum;Pelajaran;5
+191;Ekonomi Syariah;Pelajaran;4
+192;Akuntansi Biaya;Pelajaran;6
+193;Matematika Trigonometri;Pelajaran;5
+194;Fisika Fluida;Pelajaran;4
+195;Kimia Lingkungan;Pelajaran;6
+196;Biologi Zoologi;Pelajaran;5
+197;Geografi Transportasi;Pelajaran;4
+198;Sejarah Hindu-Buddha;Pelajaran;6
+199;Sosiologi Umum;Pelajaran;5
+200;Ekonomi Perdagangan;Pelajaran;4
+201;Ensiklopedia Hewan;Referensi;5
+202;Ensiklopedia Tumbuhan;Referensi;4
+203;Ensiklopedia Dunia;Referensi;6
+204;Atlas Benua Asia;Referensi;5
+205;Atlas Benua Eropa;Referensi;4
+206;Atlas Indonesia;Referensi;6
+207;Kamus Besar Bahasa Indonesia;Referensi;7
+208;Kamus Inggris-Indonesia;Referensi;5
+209;Kamus Indonesia-Inggris;Referensi;5
+210;Kamus Sinonim Antonim;Referensi;6
+211;Buku Fakta Dunia;Referensi;4
+212;Buku Fakta Sains;Referensi;6
+213;Ensiklopedia Teknologi;Referensi;5
+214;Ensiklopedia Sains;Referensi;4
+215;Ensiklopedia Astronomi;Referensi;6
+216;Ensiklopedia Laut;Referensi;5
+217;Ensiklopedia Planet;Referensi;4
+218;Ensiklopedia Mesin;Referensi;5
+219;Ensiklopedia Arsitektur;Referensi;6
+220;Ensiklopedia Sejarah Dunia;Referensi;7
+221;Atlas Tata Surya;Referensi;5
+222;Atlas Indonesia Modern;Referensi;4
+223;Atlas Negara-negara;Referensi;6
+224;Kamus Biologi;Referensi;5
+225;Kamus Fisika;Referensi;6
+226;Kamus Kimia;Referensi;5
+227;Kamus Ekonomi;Referensi;4
+228;Kamus Komputer;Referensi;6
+229;Kamus Hukum;Referensi;5
+230;Kamus Kedokteran;Referensi;6
+231;Atlas Cuaca Dunia;Referensi;4
+232;Ensiklopedia Cuaca;Referensi;5
+233;Ensiklopedia Hewan Laut;Referensi;6
+234;Ensiklopedia Reptil;Referensi;5
+235;Ensiklopedia Mamalia;Referensi;4
+236;Ensiklopedia Burung;Referensi;6
+237;Ensiklopedia Serangga;Referensi;5
+238;Ensiklopedia Mineral;Referensi;4
+239;Ensiklopedia Batu Mulia;Referensi;6
+240;Ensiklopedia Teknologi Modern;Referensi;5
+241;Ensiklopedia Komputer;Referensi;7
+242;Ensiklopedia Robotika;Referensi;5
+243;Ensiklopedia AI;Referensi;6
+244;Ensiklopedia Luar Angkasa;Referensi;4
+245;Ensiklopedia Senjata;Referensi;6
+246;Ensiklopedia Peta Dunia;Referensi;5
+247;Ensiklopedia Sungai Dunia;Referensi;4
+248;Ensiklopedia Gunung Dunia;Referensi;6
+249;Ensiklopedia Negara Asia;Referensi;5
+250;Ensiklopedia Negara Afrika;Referensi;7
+251;Ensiklopedia Negara Eropa;Referensi;5
+252;Ensiklopedia Negara Amerika;Referensi;4
+253;Ensiklopedia Negara Oceania;Referensi;6
+254;Ensiklopedia Sejarah Indonesia;Referensi;5
+255;Ensiklopedia Kerajaan Dunia;Referensi;6
+256;Ensiklopedia Ilmuwan Dunia;Referensi;5
+257;Ensiklopedia Penemuan;Referensi;4
+258;Ensiklopedia Transportasi;Referensi;6
+259;Ensiklopedia Bangunan Dunia;Referensi;5
+260;Ensiklopedia Keajaiban Dunia;Referensi;7
+261;Ensiklopedia Kebudayaan Dunia;Referensi;6
+262;Ensiklopedia Seni Lukis;Referensi;5
+263;Ensiklopedia Musik Dunia;Referensi;4
+264;Ensiklopedia Film;Referensi;6
+265;Ensiklopedia Fotografi;Referensi;5
+266;Ensiklopedia Arkeologi;Referensi;6
+267;Ensiklopedia Fosil;Referensi;5
+268;Ensiklopedia Batu Fosil;Referensi;4
+269;Ensiklopedia Laut Dalam;Referensi;6
+270;Ensiklopedia Gunung Berapi;Referensi;5
+271;Ensiklopedia Hutan Dunia;Referensi;4
+272;Ensiklopedia Sumber Daya Alam;Referensi;6
+273;Ensiklopedia Cuaca Ekstrem;Referensi;5
+274;Ensiklopedia Bintang;Referensi;4
+275;Ensiklopedia Galaksi;Referensi;6
+276;Ensiklopedia Nebula;Referensi;5
+277;Ensiklopedia Lubang Hitam;Referensi;4
+278;Ensiklopedia Roket;Referensi;6
+279;Ensiklopedia Satelit;Referensi;5
+280;Ensiklopedia Telekomunikasi;Referensi;6
+281;Ensiklopedia Jaringan Komputer;Referensi;5
+282;Ensiklopedia Cyber Security;Referensi;4
+283;Ensiklopedia Bahasa Dunia;Referensi;6
+284;Ensiklopedia Agama Dunia;Referensi;5
+285;Ensiklopedia Filsafat;Referensi;4
+286;Ensiklopedia Ilmu Politik;Referensi;6
+287;Ensiklopedia Biografi Tokoh;Referensi;5
+288;Ensiklopedia Tokoh Indonesia;Referensi;6
+289;Ensiklopedia Tokoh Dunia;Referensi;7
+290;Ensiklopedia Budaya Indonesia;Referensi;5
+291;Ensiklopedia Permainan Tradisional;Referensi;4
+292;Ensiklopedia Olahraga Dunia;Referensi;6
+293;Ensiklopedia Pertanian;Referensi;5
+294;Ensiklopedia Peternakan;Referensi;4
+295;Ensiklopedia Kelautan Indonesia;Referensi;6
+296;Ensiklopedia Perikanan;Referensi;5
+297;Ensiklopedia Hutan Indonesia;Referensi;6
+298;Ensiklopedia Gunung Indonesia;Referensi;5
+299;Ensiklopedia Ekologi;Referensi;7
+300;Ensiklopedia Energi;Referensi;5
+301;Dongeng Nusantara;Anak;5
+302;Cerita Si Kancil;Anak;4
+303;Petualangan Si Kura-kura;Anak;6
+304;Cerita Rakyat Jawa;Anak;5
+305;Cerita Rakyat Sumatera;Anak;4
+306;Cerita Rakyat Kalimantan;Anak;6
+307;Cerita Rakyat Sulawesi;Anak;5
+308;Cerita Rakyat Papua;Anak;4
+309;Kisah Putri Salju;Anak;6
+310;Kisah Cinderella;Anak;5
+311;Kisah Rapunzel;Anak;7
+312;Kisah Aladdin;Anak;5
+313;Kisah Pinokio;Anak;4
+314;Kisah Peter Pan;Anak;6
+315;Kisah Robin Hood;Anak;5
+316;Kisah Tiga Babi Kecil;Anak;4
+317;Ensiklopedia Anak Hewan;Anak;6
+318;Ensiklopedia Anak Tumbuhan;Anak;5
+319;Ensiklopedia Anak Planet;Anak;4
+320;Ensiklopedia Anak Laut;Anak;7
+321;Ensiklopedia Anak Mesin;Anak;5
+322;Ensiklopedia Anak Tubuh Manusia;Anak;4
+323;Belajar Huruf A-Z;Anak;6
+324;Belajar Angka 1-20;Anak;5
+325;Belajar Membaca;Anak;4
+326;Belajar Menulis;Anak;5
+327;Belajar Berhitung;Anak;6
+328;Belajar Bahasa Inggris;Anak;4
+329;Belajar Sains Dasar;Anak;5
+330;Belajar Mengenal Warna;Anak;6
+331;Belajar Mengenal Bentuk;Anak;4
+332;Belajar Alat Musik;Anak;6
+333;Belajar Hewan Buas;Anak;5
+334;Belajar Hewan Jinak;Anak;4
+335;Belajar Profesi;Anak;6
+336;Belajar Kendaraan;Anak;5
+337;Belajar Geometri Dasar;Anak;4
+338;Belajar Perkalian Dasar;Anak;6
+339;Belajar Pembagian Dasar;Anak;5
+340;Belajar Penjumlahan Dasar;Anak;4
+341;Belajar Pengurangan Dasar;Anak;6
+342;Komik Anak Petualangan;Anak;5
+343;Komik Anak Robot;Anak;4
+344;Komik Anak Hewan;Anak;6
+345;Komik Anak Sains;Anak;5
+346;Komik Anak Fantasi;Anak;7
+347;Komik Anak Superhero;Anak;5
+348;Komik Anak Pesawat;Anak;4
+349;Komik Anak Kapal;Anak;6
+350;Komik Anak Kereta;Anak;5
+351;Kumpulan Lagu Anak;Anak;4
+352;Cerita Sebelum Tidur;Anak;6
+353;Cerita Teladan Anak;Anak;5
+354;Cerita Akhlak Anak;Anak;4
+355;Cerita Pendidikan Karakter;Anak;6
+356;Puzzle Bergambar Hewan;Anak;5
+357;Puzzle Bergambar Angka;Anak;4
+358;Puzzle Bergambar Huruf;Anak;6
+359;Puzzle Bergambar Profesi;Anak;5
+360;Buku Aktivitas Menggambar;Anak;4
+361;Buku Aktivitas Mewarnai;Anak;7
+362;Buku Aktivitas Menulis;Anak;5
+363;Buku Aktivitas Berhitung;Anak;4
+364;Buku Aktivitas Sains;Anak;6
+365;Buku Aktivitas Stiker;Anak;5
+366;Buku Aktivitas Motorik;Anak;4
+367;Buku Aktivitas Logika;Anak;6
+368;Buku Aktivitas Puzzle;Anak;5
+369;Buku Aktivitas Kreatif;Anak;4
+370;Novel Anak Petualangan;Anak;6
+371;Novel Anak Fantasi;Anak;5
+372;Novel Anak Robot;Anak;4
+373;Novel Anak Hewan;Anak;6
+374;Novel Anak Sahabat;Anak;5
+375;Novel Anak Sekolah;Anak;4
+376;Novel Anak Misteri;Anak;6
+377;Novel Anak Sains;Anak;5
+378;Novel Anak Superhero;Anak;4
+379;Cerita Alkitab Anak;Anak;6
+380;Cerita Nabi untuk Anak;Anak;5
+381;Cerita Akhlak Islami;Anak;4
+382;Cerita Pendidikan Moral;Anak;5
+383;Cerita Keseharian;Anak;6
+384;Cerita Keluarga;Anak;5
+385;Cerita Perjalanan;Anak;4
+386;Cerita Olahraga;Anak;6
+387;Cerita Fantasi Hewan;Anak;5
+388;Cerita Dunia Ajaib;Anak;7
+389;Cerita Petualangan Laut;Anak;5
+390;Cerita Petualangan Hutan;Anak;4
+391;Cerita Petualangan Angkasa;Anak;6
+392;Cerita Petualangan Robot;Anak;5
+393;Cerita Petualangan Ninja;Anak;4
+394;Cerita Petualangan Bajak Laut;Anak;6
+395;Cerita Dunia Peri;Anak;5
+396;Cerita Dunia Kurcaci;Anak;4
+397;Cerita Monster Baik;Anak;6
+398;Cerita Kerajaan Ajaib;Anak;5
+399;Cerita Dunia Mainan;Anak;4
+400;Cerita Dunia Es;Anak;6
+401;Laskar Pelangi;Fiksi;7
+402;Sang Pemimpi;Fiksi;6
+403;Edensor;Fiksi;5
+404;Negeri 5 Menara;Fiksi;4
+405;Rantau 1 Muara;Fiksi;6
+406;Bumi;Fiksi;5
+407;Bulan;Fiksi;6
+408;Matahari;Fiksi;5
+409;Ceros & Batozar;Fiksi;4
+410;Si Putih;Fiksi;6
+411;Pulang;Fiksi;7
+412;Pergi;Fiksi;6
+413;Hujan;Fiksi;5
+414;Sagaras;Fiksi;5
+415;Nebula;Fiksi;4
+416;Batas;Fiksi;6
+417;Gelombang;Fiksi;5
+418;Partikel;Fiksi;4
+419;Rectoverso;Fiksi;6
+420;Supernova Kesatria;Fiksi;5
+421;Supernova Akar;Fiksi;4
+422;Supernova Petir;Fiksi;5
+423;Supernova Inteligensi Embun;Fiksi;6
+424;Supernova Gelombang;Fiksi;4
+425;Supernova Episode;Fiksi;6
+426;Tentang Kamu;Fiksi;7
+427;Ayah;Fiksi;5
+428;Ibu;Fiksi;5
+429;Rindu;Fiksi;4
+430;Imperfect;Fiksi;6
+431;Mariposa;Fiksi;7
+432;Dilan 1990;Fiksi;6
+433;Dilan 1991;Fiksi;5
+434;Milea;Fiksi;6
+435;Antares;Fiksi;5
+436;Selena;Fiksi;4
+437;Nebula Bintang;Fiksi;6
+438;Moonlight;Fiksi;5
+439;Summer Breeze;Fiksi;4
+440;Autumn Memories;Fiksi;6
+441;Winter Tale;Fiksi;5
+442;Spring Harmony;Fiksi;4
+443;The Dreamer;Fiksi;6
+444;Sky Bound;Fiksi;5
+445;Ocean Whisper;Fiksi;7
+446;Forest Spirit;Fiksi;5
+447;Mountain Echo;Fiksi;4
+448;River Song;Fiksi;6
+449;Island Secret;Fiksi;5
+450;Shadow Hunter;Fiksi;6
+451;Night Stalker;Fiksi;5
+452;Silent Hill Story;Fiksi;4
+453;Darkness Falls;Fiksi;5
+454;Mystery House;Fiksi;5
+455;Ghost Town;Fiksi;4
+456;Haunted Lake;Fiksi;6
+457;Phantom Forest;Fiksi;5
+458;The Lost Kingdom;Fiksi;7
+459;The Hidden City;Fiksi;6
+460;The Forgotten Temple;Fiksi;5
+461;The Crystal Tower;Fiksi;4
+462;The Golden Sword;Fiksi;6
+463;The Silver Crown;Fiksi;5
+464;The Iron Gate;Fiksi;4
+465;The Emerald Ocean;Fiksi;6
+466;The Ruby Mountain;Fiksi;5
+467;The Sapphire Valley;Fiksi;7
+468;The Amber Desert;Fiksi;5
+469;The Obsidian Cave;Fiksi;4
+470;The Stardust Path;Fiksi;6
+471;Journey to the Stars;Fiksi;5
+472;Galaxy Riders;Fiksi;4
+473;The Last Astronaut;Fiksi;6
+474;Chronicles of Space;Fiksi;5
+475;The Quantum Paradox;Fiksi;7
+476;The Infinity Loop;Fiksi;6
+477;Parallel Dreams;Fiksi;5
+478;Alternate Realms;Fiksi;4
+479;Time Chaser;Fiksi;6
+480;Dimension Walker;Fiksi;5
+481;Portal of Worlds;Fiksi;4
+482;Shadow Realm;Fiksi;6
+483;Mystic Flame;Fiksi;5
+484;Arcane Legends;Fiksi;4
+485;The Magician’s Tale;Fiksi;6
+486;The Witch’s Secret;Fiksi;5
+487;The Dragon’s Oath;Fiksi;7
+488;The Phoenix Code;Fiksi;6
+489;The Serpent’s Whisper;Fiksi;5
+490;The Wolf’s Path;Fiksi;4
+491;The Lionheart Legacy;Fiksi;6
+492;The Fallen Knight;Fiksi;5
+493;The Silver Mage;Fiksi;4
+494;The Golden Archer;Fiksi;6
+495;The Blue Rogue;Fiksi;5
+496;The Red Prophet;Fiksi;4
+497;The Black Sentinel;Fiksi;6
+498;The White Oracle;Fiksi;5
+499;The Grey Wanderer;Fiksi;4
+500;The Starborn Child;Fiksi;7

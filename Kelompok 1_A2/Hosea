@@ -1,0 +1,164 @@
+/* ========================== MENU USER ========================== */
+void menuUser(const char *username) {
+    int pilih;
+
+    do {
+        printf("\n============================\n");
+        printf("     MENU USER (%s)\n", username);
+        printf("============================\n");
+        printf("1. Pinjam Buku\n");
+        printf("2. Kembalikan Buku\n");
+        printf("3. Lihat Pinjaman Saya\n");
+        printf("4. Logout\n");
+        printf("Pilih: ");
+        scanf("%d", &pilih);
+
+        switch (pilih) {
+            case 1:
+                pinjamBuku(username);
+                break;
+            case 2:
+                kembalikanBuku(username);
+                break;
+            case 3:
+                cekPinjamanUser(username);
+                break;
+            case 4:
+                printf("Logout berhasil.\n");
+                break;
+            default:
+                printf("Pilihan tidak valid!\n");
+        }
+
+    } while (pilih != 4);
+}
+
+/* ================================================================
+   MENU ADMIN
+   ================================================================ */
+
+void tampilkanSemuaBuku() {
+    printf("\n=== DAFTAR BUKU ===\n");
+    for (int i = 0; i < jumlahBuku; i++) {
+        printf("ID:%3d | %-40s | Jenis: %-12s | Stok: %d\n",
+               buku[i].id,
+               buku[i].judul,
+               buku[i].jenis,
+               buku[i].stok);
+    }
+}
+
+void tambahBuku() {
+    int idbaru;
+    char judul[200], jenis[50];
+    int stok;
+
+    printf("\n=== TAMBAH BUKU ===\n");
+    printf("Masukkan ID baru: ");
+    scanf("%d", &idbaru);
+
+    if (cariBukuByID(idbaru) != -1) {
+        printf("ID sudah digunakan!\n");
+        return;
+    }
+
+    getchar();
+    printf("Masukkan judul: ");
+    fgets(judul, sizeof(judul), stdin);
+    judul[strcspn(judul, "\n")] = 0;
+
+    printf("Masukkan jenis: ");
+    fgets(jenis, sizeof(jenis), stdin);
+    jenis[strcspn(jenis, "\n")] = 0;
+
+    printf("Masukkan stok awal: ");
+    scanf("%d", &stok);
+
+    buku[jumlahBuku].id = idbaru;
+    strcpy(buku[jumlahBuku].judul, judul);
+    strcpy(buku[jumlahBuku].jenis, jenis);
+    buku[jumlahBuku].stok = stok;
+
+    jumlahBuku++;
+    saveBuku();
+
+    printf("Buku berhasil ditambahkan!\n");
+}
+
+void hapusBuku() {
+    int id;
+    printf("\nMasukkan ID buku yang ingin dihapus: ");
+    scanf("%d", &id);
+
+    int idx = cariBukuByID(id);
+    if (idx == -1) {
+        printf("Buku tidak ditemukan!\n");
+        return;
+    }
+
+    for (int i = idx; i < jumlahBuku - 1; i++)
+        buku[i] = buku[i + 1];
+
+    jumlahBuku--;
+    saveBuku();
+
+    printf("Buku berhasil dihapus.\n");
+}
+
+void tambahStokBuku() {
+    int id, tambah;
+    printf("\nMasukkan ID buku yang ingin ditambah stoknya: ");
+    scanf("%d", &id);
+
+    int idx = cariBukuByID(id);
+    if (idx == -1) {
+        printf("Buku tidak ditemukan!\n");
+        return;
+    }
+
+    printf("Masukkan jumlah penambahan stok: ");
+    scanf("%d", &tambah);
+
+    buku[idx].stok += tambah;
+    saveBuku();
+
+    printf("Stok berhasil ditambahkan!\n");
+}
+
+void menuAdmin() {
+    int pilih;
+
+    do {
+        printf("\n============================\n");
+        printf("          MENU ADMIN       \n");
+        printf("============================\n");
+        printf("1. Lihat Semua Buku\n");
+        printf("2. Tambah Buku\n");
+        printf("3. Hapus Buku\n");
+        printf("4. Tambah Stok Buku\n");
+        printf("5. Logout\n");
+        printf("Pilih: ");
+        scanf("%d", &pilih);
+
+        switch (pilih) {
+            case 1:
+                tampilkanSemuaBuku();
+                break;
+            case 2:
+                tambahBuku();
+                break;
+            case 3:
+                hapusBuku();
+                break;
+            case 4:
+                tambahStokBuku();
+                break;
+            case 5:
+                printf("Logout berhasil.\n");
+                break;
+            default:
+                printf("Pilihan tidak valid!\n");
+        }
+
+    } while (pilih != 5);
+}

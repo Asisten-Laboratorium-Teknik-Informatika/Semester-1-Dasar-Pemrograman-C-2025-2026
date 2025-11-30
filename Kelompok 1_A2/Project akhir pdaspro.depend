@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1763601917 source:d:\tugas\project akhir pdaspro\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
