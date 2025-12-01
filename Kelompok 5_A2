@@ -1,0 +1,316 @@
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <stdlib.h>
+#include <windows.h>
+
+void aturWarna(int kode) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), kode);
+}
+
+void bersihkanLayar() {
+    system("cls");
+}
+
+void tulisPelan(const char *text, int ms) {
+    for (int i = 0; text[i]; i++) {
+        putchar(text[i]);
+        Sleep(ms);
+    }
+}
+
+void animasiMuat(const char *msg) {
+    aturWarna(11);
+    printf("%s\n[", msg);
+    for (int i = 0; i < 30; i++) {
+        printf("#");
+        Sleep(25);
+    }
+    printf("]\n");
+    aturWarna(7);
+}
+
+void tampilBanner(const char *judul) {
+    aturWarna(10);
+    printf("\n=============================================\n");
+    aturWarna(14);
+    printf("              %s\n", judul);
+    aturWarna(10);
+    printf("=============================================\n");
+    aturWarna(7);
+}
+
+struct Transaksi {
+    char jenis[10];
+    char kategori[50];
+    char tanggal[20];
+    int jumlah;
+};
+
+struct Transaksi daftarTransaksi[500];
+int jumlahTransaksi = 0;
+int saldoSaatIni = 0;
+
+void ambilTanggal(char *buffer) {
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    sprintf(buffer, "%02d/%02d/%04d", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+}
+
+void simpanData() {
+    animasiMuat("Menyimpan data...");
+    FILE *f = fopen("smartbudget.txt", "w");
+    if (!f) return;
+
+    fprintf(f, "%d %d\n", jumlahTransaksi, saldoSaatIni);
+
+    for (int i = 0; i < jumlahTransaksi; i++) {
+        fprintf(f, "%s;%s;%s;%d\n",
+            daftarTransaksi[i].jenis,
+            daftarTransaksi[i].kategori,
+            daftarTransaksi[i].tanggal,
+            daftarTransaksi[i].jumlah
+        );
+    }
+    fclose(f);
+}
+
+void muatData() {
+    FILE *f = fopen("smartbudget.txt", "r");
+    if (!f) return;
+
+    fscanf(f, "%d %d\n", &jumlahTransaksi, &saldoSaatIni);
+
+    for (int i = 0; i < jumlahTransaksi; i++) {
+        fscanf(f, "%[^;];%[^;];%[^;];%d\n",
+            daftarTransaksi[i].jenis,
+            daftarTransaksi[i].kategori,
+            daftarTransaksi[i].tanggal,
+            &daftarTransaksi[i].jumlah
+        );
+    }
+    fclose(f);
+}
+
+void tambahUangMasuk() {
+    bersihkanLayar();
+    tampilBanner("TAMBAH PEMASUKAN");
+
+    printf("Kategori : ");
+    getchar();
+    fgets(daftarTransaksi[jumlahTransaksi].kategori, 50, stdin);
+    daftarTransaksi[jumlahTransaksi].kategori[strcspn(daftarTransaksi[jumlahTransaksi].kategori, "\n")] = 0;
+
+    printf("Jumlah   : ");
+    scanf("%d", &daftarTransaksi[jumlahTransaksi].jumlah);
+
+    strcpy(daftarTransaksi[jumlahTransaksi].jenis, "Masuk");
+    ambilTanggal(daftarTransaksi[jumlahTransaksi].tanggal);
+
+    saldoSaatIni += daftarTransaksi[jumlahTransaksi].jumlah;
+    jumlahTransaksi++;
+
+    simpanData();
+
+    aturWarna(10);
+    tulisPelan("\nPemasukan berhasil dicatat!\n", 15);
+    aturWarna(14);
+    printf("Tanggal: %s\n", daftarTransaksi[jumlahTransaksi - 1].tanggal);
+    aturWarna(7);
+}
+
+void tambahUangKeluar() {
+    bersihkanLayar();
+    tampilBanner("TAMBAH PENGELUARAN");
+
+    printf("Kategori : ");
+    getchar();
+    fgets(daftarTransaksi[jumlahTransaksi].kategori, 50, stdin);
+    daftarTransaksi[jumlahTransaksi].kategori[strcspn(daftarTransaksi[jumlahTransaksi].kategori, "\n")] = 0;
+
+    printf("Jumlah   : ");
+    scanf("%d", &daftarTransaksi[jumlahTransaksi].jumlah);
+
+    if (daftarTransaksi[jumlahTransaksi].jumlah > saldoSaatIni) {
+        aturWarna(12);
+        tulisPelan("Saldo tidak cukup! Transaksi dibatalkan.\n", 10);
+        aturWarna(7);
+        return;
+    }
+
+    strcpy(daftarTransaksi[jumlahTransaksi].jenis, "Keluar");
+    ambilTanggal(daftarTransaksi[jumlahTransaksi].tanggal);
+
+    saldoSaatIni -= daftarTransaksi[jumlahTransaksi].jumlah;
+    jumlahTransaksi++;
+
+    simpanData();
+
+    aturWarna(10);
+    tulisPelan("\nPengeluaran berhasil dicatat!\n", 15);
+    aturWarna(14);
+    printf("Tanggal: %s\n", daftarTransaksi[jumlahTransaksi - 1].tanggal);
+    aturWarna(7);
+}
+
+void cekSaldo() {
+    bersihkanLayar();
+    tampilBanner("SALDO SAAT INI");
+    aturWarna(11);
+    printf("Saldo anda sekarang: %d\n", saldoSaatIni);
+    aturWarna(7);
+}
+
+void tampilRiwayat() {
+    bersihkanLayar();
+    tampilBanner("RIWAYAT TRANSAKSI");
+
+    if (jumlahTransaksi == 0) {
+        aturWarna(12);
+        printf("Belum ada transaksi.\n");
+        aturWarna(7);
+        return;
+    }
+
+    for (int i = 0; i < jumlahTransaksi; i++) {
+        aturWarna(14);
+        printf("\n#%d\n", i + 1);
+        aturWarna(7);
+        printf("Jenis    : %s\n", daftarTransaksi[i].jenis);
+        printf("Kategori : %s\n", daftarTransaksi[i].kategori);
+        printf("Tanggal  : %s\n", daftarTransaksi[i].tanggal);
+        printf("Jumlah   : %d\n", daftarTransaksi[i].jumlah);
+    }
+}
+
+void pengeluaranPerKategori() {
+    bersihkanLayar();
+    tampilBanner("PENGELUARAN PER KATEGORI");
+
+    char target[50];
+    int totalOut = 0;
+
+    printf("Masukkan kategori: ");
+    getchar();
+    fgets(target, 50, stdin);
+    target[strcspn(target, "\n")] = 0;
+
+    aturWarna(14);
+    printf("\n--- Pengeluaran kategori '%s' ---\n", target);
+    aturWarna(7);
+
+    for (int i = 0; i < jumlahTransaksi; i++) {
+        if (strcmp(daftarTransaksi[i].jenis, "Keluar") == 0 &&
+            strcmp(daftarTransaksi[i].kategori, target) == 0) {
+
+            printf("Tanggal: %s | Jumlah: %d\n",
+                daftarTransaksi[i].tanggal, daftarTransaksi[i].jumlah);
+
+            totalOut += daftarTransaksi[i].jumlah;
+        }
+    }
+
+    aturWarna(11);
+    printf("\nTotal pengeluaran kategori ini: %d\n", totalOut);
+    aturWarna(7);
+}
+
+void hapusDataTransaksi() {
+    bersihkanLayar();
+    tampilBanner("HAPUS TRANSAKSI");
+
+    int index;
+    tampilRiwayat();
+
+    printf("\nNomor transaksi yang ingin dihapus: ");
+    scanf("%d", &index);
+    index--;
+
+    if (index < 0 || index >= jumlahTransaksi) {
+        aturWarna(12);
+        printf("Tidak valid.\n");
+        aturWarna(7);
+        return;
+    }
+
+    if (strcmp(daftarTransaksi[index].jenis, "Masuk") == 0)
+        saldoSaatIni -= daftarTransaksi[index].jumlah;
+    else
+        saldoSaatIni += daftarTransaksi[index].jumlah;
+
+    for (int i = index; i < jumlahTransaksi - 1; i++)
+        daftarTransaksi[i] = daftarTransaksi[i + 1];
+
+    jumlahTransaksi--;
+    simpanData();
+
+    aturWarna(10);
+    tulisPelan("Transaksi berhasil dihapus.\n", 15);
+    aturWarna(7);
+}
+
+void tampilDashboard() {
+    bersihkanLayar();
+    tampilBanner("DASHBOARD KEUANGAN");
+
+    int totalMasuk = 0, totalKeluar = 0;
+
+    for (int i = 0; i < jumlahTransaksi; i++) {
+        if (strcmp(daftarTransaksi[i].jenis, "Masuk") == 0)
+            totalMasuk += daftarTransaksi[i].jumlah;
+        else
+            totalKeluar += daftarTransaksi[i].jumlah;
+    }
+
+    aturWarna(11);
+    printf("Total pemasukan   : %d\n", totalMasuk);
+    printf("Total pengeluaran : %d\n", totalKeluar);
+    printf("Saldo akhir       : %d\n", saldoSaatIni);
+    aturWarna(7);
+}
+
+int main() {
+    int pilihan;
+
+    bersihkanLayar();
+    muatData();
+    tampilBanner("SMART BUDGETING");
+
+    do {
+        aturWarna(14);
+        printf("\nMenu:\n");
+        aturWarna(7);
+        printf("1. Tambah uang masuk\n");
+        printf("2. Tambah uang keluar\n");
+        printf("3. Cek saldo\n");
+        printf("4. Riwayat transaksi\n");
+        printf("5. Pengeluaran per kategori\n");
+        printf("6. Hapus transaksi\n");
+        printf("7. Dashboard\n");
+        printf("8. Keluar\n");
+        printf("Pilih menu: ");
+        scanf("%d", &pilihan);
+
+        switch (pilihan) {
+            case 1: tambahUangMasuk(); break;
+            case 2: tambahUangKeluar(); break;
+            case 3: cekSaldo(); break;
+            case 4: tampilRiwayat(); break;
+            case 5: pengeluaranPerKategori(); break;
+            case 6: hapusDataTransaksi(); break;
+            case 7: tampilDashboard(); break;
+            case 8:
+                aturWarna(10);
+                tulisPelan("\nTerima kasih telah menggunakan Smart Budget!\n", 15);
+                aturWarna(7);
+                break;
+            default:
+                aturWarna(12);
+                printf("\nMenu tidak tersedia.\n");
+                aturWarna(7);
+        }
+
+    } while (pilihan != 8);
+
+    return 0;
+}
