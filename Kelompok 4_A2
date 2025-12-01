@@ -4,13 +4,6 @@
  Safwatun Naila
  Farah Dhiba
  Indah Febeyola
-
- Perbaikan:
- - rapikan menu sesuai "Rancangan Medicare X" (menu utama + tindakan 02/04)
- - submenu Tes: 01=Tes Narkoba (Rp100.000), 02=Cek Kesehatan (Rp200.000)
- - hanya pasien Mandiri boleh melakukan tes ini (BPJS ditolak)
- - input NIK/No.Identitas ditambahkan pada pendaftaran dan dicetak di surat
- - langsung lanjut otomatis ke apotek/kamar bila keputusan dokter pilihannya mengarah ke sana
 */
 
 #include <stdio.h>
