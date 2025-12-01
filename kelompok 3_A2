@@ -30,7 +30,7 @@ Layanan kategoriPria[MAX_KATEGORI_PRIA][MAX_PER_CATEGORY] = {
     {{"Facial Pria", 50000}, {"Totok Wajah / Face Massage", 50000}, {"Masker Wajah", 40000}, {"Perapian Alis / Jenggot", 45000}},
     {{"Body Massage", 300000}, {"Body Scrub / Lulur", 15000}, {"Body Spa", 100000}, {"Body Whitening / Brightening", 100000}},
     {{"Shaving (Cukur Kumis, Jenggot, Cambang)", 75000}, {"Ear Cleaning (Membersihkan Telinga)", 45000}, {"Manicure / Pedicure untuk Pria", 40000}, {"Hair Tattoo / Desain Cukuran", 35000}},
-    {{"Men’s Relax Package (Haircut + Facial + Massage + Hair Spa)", 300000}}
+    {{"Menâ€™s Relax Package (Haircut + Facial + Massage + Hair Spa)", 300000}}
 };
 int jumlahPerKategoriPria[MAX_KATEGORI_PRIA] = {6, 4, 4, 4, 1};
 
@@ -244,3 +244,4 @@ int main(void) {
 
     return 0;
 }
+
