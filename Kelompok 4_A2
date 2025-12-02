@@ -1,14 +1,63 @@
 
-/* Kelompok 4 - Program Pelayanan RS - Medicare X
- Vonaquie Jojor
- Safwatun Naila
- Farah Dhiba
- Indah Febeyola
+
+
+/*
+MEDICARE X - SISTEM PELAYANAN RUMAH SAKIT - SEDERHANA
+Vonaquie Jojor Dwini Loan Pandiangan	251712034
+Safwatun Naila	251712027
+Farah Dhiba	251712038
+Indah Febeyola Alessiandra Sijabat	251712030
 */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+#ifdef _WIN32
+    #include <windows.h>
+    void sleep_seconds(int s) { Sleep(s * 1000); }
+#else
+    #include <unistd.h>
+    void sleep_seconds(int s) { sleep(s); }
+#endif
+
+/* =============================== */
+/*   EFEK LOADING & OUTPUT BERTAHAP */
+/* =============================== */
+
+void show_loading_dots(int dots) {
+    if (dots <= 0) dots = 3;
+    printf("Loading");
+    fflush(stdout);
+    for (int i = 0; i < dots; i++) {
+        printf(".");
+        fflush(stdout);
+        sleep_seconds(1);
+    }
+    printf("\n");
+}
+
+/* Cetak teks, jeda 1 detik setiap newline */
+void print_with_line_pause(const char *text) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        putchar(text[i]);
+        fflush(stdout);
+
+        if (text[i] == '\n')
+            sleep_seconds(1);
+    }
+}
+
+/* Loading dulu, lalu tampilkan teks bertahap */
+void loading_then_print(const char *text, int dots) {
+    show_loading_dots(dots);
+    print_with_line_pause(text);
+}
+
+/* -------------- end loading utils ------------- */
 
 #define MAX_PATIENTS 200
 #define NAME_LEN 100
@@ -18,19 +67,16 @@
 #define HISTORY_LEN 1024
 #define IDNO_LEN 32
 
-/* tipe pembayaran */
 typedef enum { PAY_MANDIRI = 0, PAY_BPJS = 1 } PayType;
-/* stage sederhana */
 typedef enum { ST_REG=0, ST_POLI_DONE=1, ST_APOTEK_DONE=2, ST_TEST_DONE=3, ST_INROOM=4, ST_DISCHARGED=5 } Stage;
 
-/* struktur pasien (ditambahkan field id_no untuk NIK/No.Identitas) */
 typedef struct {
     unsigned long id;
     int queue_no;
     char name[NAME_LEN];
     int age;
     char phone[PHONE_LEN];
-    char id_no[IDNO_LEN];       /* NIK / No.Identitas (sesuai rancangan) */
+    char id_no[IDNO_LEN];       /* NIK / No.Identitas */
     int is_rujuk; /* 0/1 */
     char rujukan_from[RUJUK_LEN];
     char rujukan_no[32];
@@ -41,31 +87,47 @@ typedef struct {
     Stage stage;
 } Patient;
 
-/* database sederhana */
-Patient patients[MAX_PATIENTS];
-int patient_count = 0;
-unsigned long next_id = 1;
-int next_queue = 1;
+/* Database sederhana */
+static Patient patients[MAX_PATIENTS];
+static int patient_count = 0;
+static unsigned long next_id = 1;
+static int next_queue = 1;
 
-/* prototypes untuk fungsi yang dipanggil sebelum definisi */
-void apotek_process_for_patient(Patient *p);
-void kamar_langsung(Patient *p);
-void tampilkanRincian(const Patient *p);
+/* Prototypes */
+int is_valid_worker(const char *user, const char *pass);
+void read_line(char *buf, int size);
 void append_history(Patient *p, const char *txt);
 void formatRibuan(int nilai, char *out, int outsz);
+const char* stage_name(Stage s);
+void tampilkanRincian(const Patient *p);
+Patient* find_by_queue(int q);
+Patient* find_by_id(unsigned long id);
+void register_patient(void);
+void apotek_process_for_patient(Patient *p);
+void apotek(void);
+void kamar_langsung(Patient *p);
+void kamar(void);
+void poli_doctor(void);
+void perform_test_choice(int type);
+void list_patients(void);
+void search_name(void);
+void tindakan_menu(void);
+int login(void);
+void print_main_menu(void);
 
-/* Validasi login pegawai */
-int is_valid_worker(const char *user, const char *pass) {
-    if ((strcmp(user, "vonaquie") == 0 && strcmp(pass, "251712034") == 0) ||
-        (strcmp(user, "safwatun") == 0 && strcmp(pass, "251712027") == 0) ||
-        (strcmp(user, "farah") == 0 && strcmp(pass, "251712038") == 0) ||
-        (strcmp(user, "indah") == 0 && strcmp(pass, "251712030") == 0)) {
-        return 1;
-    }
+/* helper validation */
+int is_digits(const char *s) {
+    if (!s || s[0] == '\0') return 0;
+    for (int i = 0; s[i]; ++i) if (!isdigit((unsigned char)s[i])) return 0;
+    return 1;
+}
+int contains_alpha(const char *s) {
+    if (!s) return 0;
+    for (int i = 0; s[i]; ++i) if (isalpha((unsigned char)s[i])) return 1;
     return 0;
 }
 
-/* helper input */
+/* ---------------- helper ---------------- */
 void read_line(char *buf, int size) {
     if (fgets(buf, size, stdin) == NULL) {
         buf[0] = '\0';
@@ -74,7 +136,6 @@ void read_line(char *buf, int size) {
     buf[strcspn(buf, "\n")] = '\0';
 }
 
-/* append history */
 void append_history(Patient *p, const char *txt) {
     if (!p || !txt || txt[0] == '\0') return;
     if (p->history[0] == '\0') {
@@ -86,35 +147,24 @@ void append_history(Patient *p, const char *txt) {
     }
 }
 
-/* format ribuan (Indonesia) */
 void formatRibuan(int nilai, char *out, int outsz) {
     char tmp[64];
     int idx = 0;
     int n = nilai;
-    if (n == 0) {
-        strncpy(out, "0", outsz-1);
-        out[outsz-1] = '\0';
-        return;
-    }
+    if (n == 0) { strncpy(out, "0", outsz-1); out[outsz-1] = '\0'; return; }
     int count = 0;
     while (n > 0 && idx < (int)sizeof(tmp)-1) {
-        if (count == 3) {
-            tmp[idx++] = '.';
-            count = 0;
-        }
+        if (count == 3) { tmp[idx++] = '.'; count = 0; }
         tmp[idx++] = '0' + (n % 10);
         n /= 10;
         count++;
     }
     int j = 0;
     if (idx >= outsz) idx = outsz - 1;
-    while (idx > 0 && j < outsz - 1) {
-        out[j++] = tmp[--idx];
-    }
+    while (idx > 0 && j < outsz - 1) out[j++] = tmp[--idx];
     out[j] = '\0';
 }
 
-//Status Layanan
 const char* stage_name(Stage s) {
     switch (s) {
         case ST_REG: return "Terdaftar (Pendaftaran)";
@@ -127,43 +177,81 @@ const char* stage_name(Stage s) {
     }
 }
 
-// tampilkan rincian pasien
-void tampilkanRincian(const Patient *p) {
-    if (!p) return;
-    printf("\n---- Pasien ID %lu ----\n", p->id);
-    printf("Nama    : %s\n", p->name);
-    printf("Umur    : %d\n", p->age);
-    printf("Telp    : %s\n", p->phone);
-    printf("NIK/ID  : %s\n", p->id_no[0] ? p->id_no : "(tidak ada)");
-    if (p->is_rujuk) {
-        printf("\nRujukan : Dari %s | No: %s\n", p->rujukan_from, p->rujukan_no);
-        printf("Dx awal : %s\n", p->diagnosis_awal);
+/* ----------------- utilities ----------------- */
+int is_valid_worker(const char *user, const char *pass) {
+    if ((strcmp(user, "vonaquie") == 0 && strcmp(pass, "251712034") == 0) ||
+        (strcmp(user, "safwatun") == 0 && strcmp(pass, "251712027") == 0) ||
+        (strcmp(user, "farah") == 0 && strcmp(pass, "251712038") == 0) ||
+        (strcmp(user, "indah") == 0 && strcmp(pass, "251712030") == 0)) {
+        return 1;
     }
-    printf("\nPembayaran : %s | No: %s\n", p->paytype == PAY_BPJS ? "BPJS" : "Mandiri", p->pay_no);
-    printf("\nStage : %s\n", stage_name(p->stage));
-    printf("\nRiwayat:\n%s\n", p->history[0] ? p->history : "(kosong)");
+    return 0;
 }
 
-// cari pasien
-Patient* find_by_queue(int q) {
-    for (int i = 0; i < patient_count; ++i) {
-        if (patients[i].queue_no == q) return &patients[i];
+int login(void) {
+    char user[64], pass[64];
+    int attempts = 3;
+    while (attempts-- > 0) {
+        printf("\nUser: ");
+        read_line(user, sizeof(user));
+        printf("Password: ");
+        read_line(pass, sizeof(pass));
+        if (is_valid_worker(user, pass)) {
+            /* tampilkan loading + pesan bertahap */
+            loading_then_print("Login berhasil.\nLanjut ke sistem...\n", 2);
+            return 1;
+        }
+        printf("Login salah. Sisa percobaan: %d\n", attempts);
     }
+    return 0;
+}
+
+/* ----------------- CRUD & find ----------------- */
+Patient* find_by_queue(int q) {
+    for (int i = 0; i < patient_count; ++i) if (patients[i].queue_no == q) return &patients[i];
     return NULL;
 }
 Patient* find_by_id(unsigned long id) {
-    for (int i = 0; i < patient_count; ++i) {
-        if (patients[i].id == id) return &patients[i];
-    }
+    for (int i = 0; i < patient_count; ++i) if (patients[i].id == id) return &patients[i];
     return NULL;
 }
 
-// registrasi pasien (menambahkan input NIK/No.Identitas sesuai rancangan)
-void register_patient() {
-    if (patient_count >= MAX_PATIENTS) {
-        printf("Penuh: tidak bisa menambah pasien lagi.\n");
-        return;
+/* ----------------- Tampilkan ----------------- */
+void tampilkanRincian(const Patient *p) {
+    if (!p) return;
+    char buf[1024];
+    snprintf(buf, sizeof(buf),
+             "\n---- Pasien ID %lu ----\n"
+             "Nama    : %s\n"
+             "Umur    : %d\n"
+             "Telp    : %s\n"
+             "NIK/ID  : %s\n",
+             p->id, p->name, p->age, p->phone[0] ? p->phone : "(tidak ada)", p->id_no[0] ? p->id_no : "(tidak ada)");
+    loading_then_print(buf, 1);
+
+    if (p->is_rujuk) {
+        char b2[512];
+        snprintf(b2, sizeof(b2), "\nRujukan : Dari %s | No: %s\nDx awal : %s\n",
+                 p->rujukan_from, p->rujukan_no, p->diagnosis_awal);
+        print_with_line_pause(b2);
     }
+    {
+        char b3[256];
+        snprintf(b3, sizeof(b3), "\nPembayaran : %s | No: %s\nStage : %s\n",
+                 p->paytype == PAY_BPJS ? "BPJS" : "Mandiri", p->pay_no, stage_name(p->stage));
+        print_with_line_pause(b3);
+    }
+    {
+        char hist_buf[1200];
+        snprintf(hist_buf, sizeof(hist_buf), "\nRiwayat:\n%s\n", p->history[0] ? p->history : "(kosong)");
+        print_with_line_pause(hist_buf);
+    }
+}
+
+/* ----------------- Pendaftaran (diperbaiki) ----------------- */
+void register_patient(void) {
+    if (patient_count >= MAX_PATIENTS) { printf("Penuh: tidak bisa menambah pasien lagi.\n"); return; }
+
     Patient tmp;
     tmp.id = next_id++;
     tmp.queue_no = next_queue++;
@@ -181,10 +269,23 @@ void register_patient() {
     char buf[256];
 
     printf("\n===--- 01 PENDAFTARAN ---===\n");
-    printf("Nama: ");
-    read_line(tmp.name, NAME_LEN);
-    if (tmp.name[0] == '\0') { printf("Nama kosong. Batal.\n"); return; }
 
+    /* Nama: validasi minimal ada huruf (hindari nama yang hanya angka) */
+    while (1) {
+        printf("Nama: ");
+        read_line(tmp.name, NAME_LEN);
+        if (tmp.name[0] == '\0') {
+            printf("Nama kosong. Masukkan nama pasien.\n");
+            continue;
+        }
+        if (!contains_alpha(tmp.name)) {
+            printf("Nama harus mengandung huruf (tidak boleh hanya angka/symbol).\n");
+            continue;
+        }
+        break;
+    }
+
+    /* Umur (sudah sesuai) */
     while (1) {
         printf("Umur: ");
         read_line(buf, sizeof(buf));
@@ -192,27 +293,67 @@ void register_patient() {
         printf("Umur tidak valid. Masukkan angka >= 0.\n");
     }
 
-    printf("NIK / No. Identitas: ");
-    read_line(tmp.id_no, IDNO_LEN);
+    /* NIK: wajib 16 digit angka */
+    while (1) {
+        printf("NIK / No. Identitas (16 digit angka): ");
+        read_line(tmp.id_no, IDNO_LEN);
+        if (strlen(tmp.id_no) == 16 && is_digits(tmp.id_no)) break;
+        printf("NIK harus tepat 16 digit angka. Saat ini panjang=%zu.\n", strlen(tmp.id_no));
+    }
 
-    printf("Telepon: ");
-    read_line(tmp.phone, PHONE_LEN);
+    /* Telepon: hanya angka, panjang 6..15 */
+    while (1) {
+        printf("Telepon (hanya angka, 6-15 digit): ");
+        read_line(tmp.phone, PHONE_LEN);
+        size_t ln = strlen(tmp.phone);
+        if (ln >= 6 && ln <= 15 && is_digits(tmp.phone)) break;
+        printf("Telepon tidak valid: harus 6-15 digit angka. Saat ini panjang=%zu.\n", ln);
+    }
 
+    /* Rujukan? Jika ya, isi asal RS + no rujukan (7 atau 10 digit)
+       Jika pasien mengisi no rujukan valid (7 atau 10 digit) maka kita
+       otomatis menetapkan jenis pembayaran berdasarkan panjang no rujukan:
+         - 7 digit, Mandiri
+         - 10 digit, BPJS
+       Sehingga kita TIDAK menanyakan ulang metode pembayaran.
+       Jika pasien bukan rujukan, minta metode pembayaran manual:
+         - Mandiri, wajib 7 digit angka (deposit)
+         - BPJS, wajib 10 digit angka (nomor bpjs)
+    */
     printf("Apakah pasien rujukan dari RS lain? (y/n): ");
     read_line(buf, sizeof(buf));
     if (buf[0] == 'y' || buf[0] == 'Y') {
         tmp.is_rujuk = 1;
-        printf("Asal rumah sakit: ");
-        read_line(tmp.rujukan_from, RUJUK_LEN);
         while (1) {
-            printf("No rujukan (7 digit Mandiri / 10 digit BPJS): ");
+            printf("Asal rumah sakit: ");
+            read_line(tmp.rujukan_from, RUJUK_LEN);
+            if (tmp.rujukan_from[0] != '\0') break;
+            printf("Asal rumah sakit tidak boleh kosong.\n");
+        }
+
+        while (1) {
+            printf("No rujukan (7 digit=Mandiri / 10 digit=BPJS): ");
             read_line(tmp.rujukan_no, sizeof(tmp.rujukan_no));
             size_t ln = strlen(tmp.rujukan_no);
-            if (ln == 7 || ln == 10) break;
-            printf("No rujukan harus 7 atau 10 digit. Saat ini: %zu\n", ln);
+            if ((ln == 7 || ln == 10) && is_digits(tmp.rujukan_no)) break;
+            printf("No rujukan harus 7 atau 10 digit angka. Saat ini panjang=%zu.\n", ln);
         }
+
         printf("Diagnosis awal: ");
         read_line(tmp.diagnosis_awal, DIAG_LEN);
+
+        /* set payment otomatis berdasarkan panjang rujukan */
+        if (strlen(tmp.rujukan_no) == 7) {
+            tmp.paytype = PAY_MANDIRI;
+            strncpy(tmp.pay_no, tmp.rujukan_no, sizeof(tmp.pay_no)-1);
+            tmp.pay_no[sizeof(tmp.pay_no)-1] = '\0';
+            append_history(&tmp, "Pembayaran otomatis: Mandiri (dari no rujukan 7 digit).");
+        } else { /* 10 digit */
+            tmp.paytype = PAY_BPJS;
+            strncpy(tmp.pay_no, tmp.rujukan_no, sizeof(tmp.pay_no)-1);
+            tmp.pay_no[sizeof(tmp.pay_no)-1] = '\0';
+            append_history(&tmp, "Pembayaran otomatis: BPJS (dari no rujukan 10 digit).");
+        }
 
         char t[512];
         snprintf(t, sizeof(t), "Rujukan dari %s | No:%s | Dx:%s",
@@ -220,55 +361,65 @@ void register_patient() {
                  tmp.rujukan_no[0] ? tmp.rujukan_no : "-",
                  tmp.diagnosis_awal[0] ? tmp.diagnosis_awal : "-");
         append_history(&tmp, t);
-    }
 
-    //Pembayaran
-    while (1) {
-        printf("Pembayaran: 1=Mandiri  2=BPJS : ");
-        read_line(buf, sizeof(buf));
-        int p = atoi(buf);
-        if (p == 2) {
-            tmp.paytype = PAY_BPJS;
-            while (1) {
-                printf("Masukkan nomor BPJS (10 digit): ");
-                read_line(tmp.pay_no, sizeof(tmp.pay_no));
-                if (strlen(tmp.pay_no) == 10) break;
-                printf("Nomor BPJS harus 10 digit.\n");
+    } else {
+        /* bukan rujukan -> tanyakan pembayaran manual dan validasi ketat sesuai permintaan */
+        while (1) {
+            printf("Pembayaran: 1=Mandiri  2=BPJS : ");
+            read_line(buf, sizeof(buf));
+            int p = atoi(buf);
+            if (p == 2) {
+                tmp.paytype = PAY_BPJS;
+                /* WAJIB input 10 digit angka untuk BPJS */
+                while (1) {
+                    printf("Masukkan nomor BPJS (10 digit angka): ");
+                    read_line(tmp.pay_no, sizeof(tmp.pay_no));
+                    if (strlen(tmp.pay_no) == 10 && is_digits(tmp.pay_no)) break;
+                    printf("Nomor BPJS harus tepat 10 digit angka. Saat ini panjang=%zu.\n", strlen(tmp.pay_no));
+                }
+                break;
+            } else if (p == 1) {
+                tmp.paytype = PAY_MANDIRI;
+                /* WAJIB input 7 digit angka untuk deposit Mandiri */
+                while (1) {
+                    printf("Masukkan nomor deposit Mandiri (7 digit angka): ");
+                    read_line(tmp.pay_no, sizeof(tmp.pay_no));
+                    if (strlen(tmp.pay_no) == 7 && is_digits(tmp.pay_no)) break;
+                    printf("Nomor deposit Mandiri harus tepat 7 digit angka. Saat ini panjang=%zu.\n", strlen(tmp.pay_no));
+                }
+                break;
+            } else {
+                printf("Pilihan tidak valid.\n");
             }
-            break;
-        } else if (p == 1) {
-            tmp.paytype = PAY_MANDIRI;
-            while (1) {
-                printf("Masukkan kode/nomor deposit (disarankan 7 digit): ");
-                read_line(tmp.pay_no, sizeof(tmp.pay_no));
-                if (strlen(tmp.pay_no) >= 1) break;
-                printf("Masukkan minimal 1 karakter.\n");
-            }
-            break;
-        } else {
-            printf("Pilihan tidak valid.\n");
+        }
+
+        {
+            char base[256];
+            snprintf(base, sizeof(base), "Terdaftar: ID=%lu Antrian=%d Pembayaran=%s No:%s",
+                     tmp.id, tmp.queue_no, tmp.paytype==PAY_BPJS?"BPJS":"Mandiri", tmp.pay_no);
+            append_history(&tmp, base);
         }
     }
 
-    {
-        char base[256];
-        snprintf(base, sizeof(base), "Terdaftar: ID=%lu Antrian=%d Pembayaran=%s No:%s",
-                 tmp.id, tmp.queue_no, tmp.paytype==PAY_BPJS?"BPJS":"Mandiri", tmp.pay_no);
-        append_history(&tmp, base);
-    }
-
+    /* simpan ke "database" */
     patients[patient_count++] = tmp;
-    printf("Terdaftar: ID=%lu | NoAntrian=%d\n", tmp.id, tmp.queue_no);
+
+    /* pendaftaran sukses: tampilkan loading + rincian singkat bertahap */
+    {
+        char tempMsg[256];
+        snprintf(tempMsg, sizeof(tempMsg),
+                 "Pendaftaran berhasil!\nID Pasien: %lu\nNomor Antrian: %d\n",
+                 tmp.id, tmp.queue_no);
+        loading_then_print(tempMsg, 3);
+    }
 }
 
-/* Fungsi khusus: proses apotek untuk pasien yang sudah didapatkan pointernya
-   (dipanggil otomatis dari poli_doctor bila dokter memilih rawat jalan) */
+/* ----------------- Apotek (otomatis untuk pointer pasien) ----------------- */
 void apotek_process_for_patient(Patient *p) {
     if (!p) return;
     char buf[256];
 
-    printf("\n=== APOTEK (langsung untuk pasien ID %lu) ===\n", p->id);
-    printf("Tampilkan rincian singkat:\n");
+    loading_then_print("\n=== APOTEK (langsung) ===\n", 1);
     tampilkanRincian(p);
 
     printf("Masukkan resep / aturan pakai: ");
@@ -279,133 +430,38 @@ void apotek_process_for_patient(Patient *p) {
         append_history(p, note);
     }
 
+    /* Jika BPJS, tidak minta pembayaran obat */
+    if (p->paytype == PAY_BPJS) {
+        append_history(p, "Apotek: pasien BPJS, obat ditanggung BPJS (tidak bayar).");
+        p->stage = ST_APOTEK_DONE;
+        loading_then_print("Pasien BPJS � tidak perlu bayar obat. Resep dicatat.\n", 2);
+        return;
+    }
+
+    /* Mandiri: minta pembayaran */
     int biaya_obat = 25000;
     char biaya_str[64];
     formatRibuan(biaya_obat, biaya_str, sizeof(biaya_str));
-    printf("Biaya obat = Rp. %s\n", biaya_str);
+    {
+        char s[128];
+        snprintf(s, sizeof(s), "Biaya obat = Rp. %s\nPembayaran lunas? (y/n): ", biaya_str);
+        print_with_line_pause(s);
+    }
 
-    printf("Pembayaran lunas? (y/n): ");
     read_line(buf, sizeof(buf));
     if (!(buf[0]=='y' || buf[0]=='Y')) {
         append_history(p, "Apotek: pembayaran obat belum lunas.");
-        printf("Pembayaran obat belum lunas. Ambil obat dihentikan.\n");
+        loading_then_print("Pembayaran obat belum lunas. Ambil obat dihentikan.\n", 1);
         return;
     }
 
     append_history(p, "Obat diambil di apotek.");
     p->stage = ST_APOTEK_DONE;
-    printf("Selesai proses apotek untuk pasien ID %lu\n", p->id);
+    loading_then_print("Selesai proses apotek untuk pasien.\n", 1);
 }
 
-/* fungsi kamar langsung (dapat dipanggil dari poli_doctor) */
-void kamar_langsung(Patient *p) {
-    if (!p) return;
-    printf("\n=== 05 Kamar (langsung) ===\n");
-    tampilkanRincian(p);
-
-    char buf[32];
-    printf("1 = Check-in\n2 = Check-out\nPilih: ");
-    read_line(buf, sizeof(buf));
-    int ch = atoi(buf);
-
-    if (ch == 1) {
-        append_history(p, "Masuk kamar (check-in).");
-        p->stage = ST_INROOM;
-        printf("Pasien check-in.\n");
-    } else if (ch == 2) {
-        append_history(p, "Keluar kamar (check-out).");
-        p->stage = ST_DISCHARGED;
-        printf("Pasien check-out.\n");
-    } else {
-        printf("Pilihan tidak valid.\n");
-    }
-}
-
-/* POLI/Dokter (memanggil apotek_process_for_patient / kamar_langsung bila perlu) */
-void poli_doctor() {
-    char buf[256];
-    printf("\n=== 02 POLI/Dokter ===\nMasukkan nomor antrian pasien (0 batal): ");
-    read_line(buf, sizeof(buf));
-    int q = atoi(buf);
-    if (q == 0) return;
-
-    Patient *p = find_by_queue(q);
-    if (!p) {
-        printf("Nomor antrian %d tidak ditemukan.\n", q);
-        return;
-    }
-
-    tampilkanRincian(p);
-    printf("Hasil pemeriksaan (satu baris): ");
-    read_line(buf, sizeof(buf));
-    if (buf[0]) append_history(p, buf);
-
-    printf("\n\n1=Rawat Jalan (obat)\n2=Rawat Inap\n3=Operasi (rawat inap)\n4=Rujuk ke RS lain\nPilih Keputusan dokter: ");
-    read_line(buf, sizeof(buf));
-    int k = atoi(buf);
-
-    if (k == 1) {
-        append_history(p, "Keputusan: Rawat jalan (resep obat).");
-        int biaya = 50000;
-        char biaya_str[64];
-        formatRibuan(biaya, biaya_str, sizeof(biaya_str));
-        printf("Biaya pelayanan (poli + resep) = Rp. %s\n", biaya_str);
-
-        printf("Pembayaran lunas? (y/n): ");
-        read_line(buf, sizeof(buf));
-        if (!(buf[0]=='y' || buf[0]=='Y')) {
-            append_history(p, "Pembayaran POLI belum lunas.");
-            printf("Pembayaran belum lunas. Proses ditunda.\n");
-            return;
-        }
-
-        append_history(p, "Pembayaran POLI lunas.");
-        p->stage = ST_POLI_DONE;
-        printf("Pasien diarahkan ke Apotek.\n");
-
-        /* langsung proses apotek otomatis untuk pasien ini */
-        apotek_process_for_patient(p);
-        return;
-    }
-    else if (k == 2) {
-        append_history(p, "Keputusan: Rawat inap (masuk kamar).");
-        p->stage = ST_INROOM;
-        printf("Pasien perlu rawat inap. Mengarahkan ke kamar...\n");
-
-        /* langsung check-in kamar untuk pasien ini */
-        kamar_langsung(p);
-        return;
-    }
-    else if (k == 3) {
-        append_history(p, "Keputusan: Operasi (rawat inap).");
-        p->stage = ST_INROOM;
-        printf("Operasi: lanjut ke kamar...\n");
-
-        /* ke kamar untuk persiapan operasi */
-        kamar_langsung(p);
-        append_history(p, "Operasi: catatan persiapan operasi ditambahkan.");
-        return;
-    }
-    else if (k == 4) {
-        append_history(p, "Keputusan: Rujuk ke RS lain.");
-        p->stage = ST_DISCHARGED;
-        if (p->paytype == PAY_MANDIRI) {
-            append_history(p, "Rujuk: keluarkan nomor 7 digit (Mandiri).");
-            printf("Output nomor rujukan (gunakan No Pembayaran/ID): %s\n", p->pay_no);
-        } else {
-            append_history(p, "Rujuk: keluarkan nomor 10 digit (BPJS).");
-            printf("Output nomor rujukan (BPJS): %s\n", p->pay_no);
-        }
-        return;
-    }
-    else {
-        printf("Pilihan tidak valid.\n");
-        return;
-    }
-}
-
-/* Apotek (manual via menu utama) */
-void apotek() {
+/* ----------------- Apotek (manual via menu) ----------------- */
+void apotek(void) {
     char buf[256];
     printf("\n=== 03 Apotek ===\nMasukkan nomor antrian pasien (0 batal): ");
     read_line(buf, sizeof(buf));
@@ -415,96 +471,62 @@ void apotek() {
     if (!p) { printf("Nomor antrian %d tidak ditemukan.\n", q); return; }
     if (p->stage < ST_POLI_DONE) { printf("Pasien belum mendapat resep dari dokter.\n"); return; }
 
-    printf("Masukkan resep / aturan pakai: ");
+    loading_then_print("Masukkan resep / aturan pakai:\n", 1);
     read_line(buf, sizeof(buf));
     if (buf[0]) append_history(p, buf);
+
+    if (p->paytype == PAY_BPJS) {
+        append_history(p, "Apotek: pasien BPJS, obat ditanggung BPJS (tidak bayar).");
+        p->stage = ST_APOTEK_DONE;
+        loading_then_print("Pasien BPJS � tidak perlu bayar obat. Resep dicatat.\n", 1);
+        return;
+    }
 
     int biaya_obat = 25000;
     char biaya_str[64];
     formatRibuan(biaya_obat, biaya_str, sizeof(biaya_str));
-    printf("Biaya obat = Rp. %s\n", biaya_str);
-    printf("Pembayaran lunas? (y/n): ");
+    {
+        char s[128];
+        snprintf(s, sizeof(s), "Biaya obat = Rp. %s\nPembayaran lunas? (y/n): ", biaya_str);
+        print_with_line_pause(s);
+    }
     read_line(buf, sizeof(buf));
     if (!(buf[0]=='y' || buf[0]=='Y')) {
         append_history(p, "Pembayaran apotek belum lunas.");
-        printf("Pembayaran obat belum lunas. Proses dihentikan.\n");
+        loading_then_print("Pembayaran obat belum lunas. Proses dihentikan.\n", 1);
         return;
     }
     append_history(p, "Obat diambil di apotek.");
     p->stage = ST_APOTEK_DONE;
-    printf("Selesai proses apotek untuk pasien ID %lu\n", p->id);
+    loading_then_print("Selesai proses apotek untuk pasien.\n", 1);
 }
 
-/* Fungsi Tes (01/02) sesuai rancangan:
-   01 = Tes Narkoba (Rp100.000)
-   02 = Cek Kesehatan (Rp200.000)
-   Hanya untuk Mandiri; cek pembayaran, input kondisi, cetak surat persis format rancangan
-*/
-void perform_test_choice(int type) {
-    char buf[512];
-    printf("\nMasukkan nomor antrian pasien (0 batal): ");
+/* ----------------- Kamar (otomatis) ----------------- */
+void kamar_langsung(Patient *p) {
+    if (!p) return;
+    char buf[64];
+    loading_then_print("\n=== 05 Kamar (langsung) ===\n", 1);
+    tampilkanRincian(p);
+
+    printf("1 = Check-in\n2 = Check-out\nPilih: ");
     read_line(buf, sizeof(buf));
-    int q = atoi(buf);
-    if (q == 0) return;
-    Patient *p = find_by_queue(q);
-    if (!p) { printf("Nomor antrian %d tidak ditemukan.\n", q); return; }
+    int ch = atoi(buf);
 
-    if (p->paytype != PAY_MANDIRI) {
-        printf("Tindakan ini hanya untuk pasien Pembayaran Mandiri. (BPJS tidak diizinkan)\n");
-        append_history(p, "Tes ditolak: pasien BPJS untuk tindakan ini.");
-        return;
-    }
-
-    int biaya = (type == 1) ? 100000 : 200000;
-    const char *judul = (type == 1) ? "Tes Narkoba" : "Cek Kesehatan";
-    char biaya_str[64];
-    formatRibuan(biaya, biaya_str, sizeof(biaya_str));
-
-    printf("\n--- %s ---\n", judul);
-    printf("Biaya: Rp. %s\n", biaya_str);
-    printf("Pembayaran lunas? (y/n): ");
-    read_line(buf, sizeof(buf));
-    if (!(buf[0]=='y' || buf[0]=='Y')) {
-        char t[256];
-        snprintf(t, sizeof(t), "%s: pembayaran belum lunas.", judul);
-        append_history(p, t);
-        printf("Pembayaran belum lunas. Proses dibatalkan.\n");
-        return;
-    }
-
-    /* input kondisi / hasil */
-    char hasil[512];
-    printf("Masukkan kondisi/hasil pemeriksaan (satu baris): ");
-    read_line(hasil, sizeof(hasil));
-    if (hasil[0] == '\0') strcpy(hasil, "(tidak diisi)");
-    printf("\n\n");
-
-    /* simpan riwayat */
-    char hist[768];
-    snprintf(hist, sizeof(hist), "%s hasil: %s | biaya Rp.%s | pembayaran lunas", judul, hasil, biaya_str);
-    append_history(p, hist);
-    p->stage = ST_TEST_DONE;
-
-    /* Cetak surat sesuai format rancangan (header + fields)
-       Format disesuaikan persis: Judul Surat (sesuai jenis), Nama, Umur, NIK/No Identitas, Hasil
-    */
-    if (type == 2) {
-        printf("\n--- SURAT KETERANGAN HASIL CEK KESEHATAN ---\n");
+    if (ch == 1) {
+        append_history(p, "Masuk kamar (check-in).");
+        p->stage = ST_INROOM;
+        loading_then_print("Pasien check-in.\n", 1);
+    } else if (ch == 2) {
+        append_history(p, "Keluar kamar (check-out).");
+        p->stage = ST_DISCHARGED;
+        loading_then_print("Pasien check-out.\n", 1);
     } else {
-        printf("\n--- SURAT KETERANGAN HASIL TES NARKOBA ---\n");
+        printf("Pilihan tidak valid.\n");
     }
-    printf("Nama                : %s\n", p->name);
-    printf("Umur                : %d\n", p->age);
-    printf("NIK / No Identitas  : %s\n", p->id_no[0] ? p->id_no : "(tidak ada)");
-    printf("Nomor telepon       : %s\n", p->phone);
-    printf("Hasil               : %s\n", hasil);
-    printf("---------- End of Surat ----------\n");
-
-    printf("\n\nTindakan %s selesai untuk pasien ID %lu\n", judul, p->id);
 }
 
-/* Kamar (manual via menu utama) */
-void kamar() {
+/* ----------------- Kamar (manual menu) ----------------- */
+void kamar(void) {
     char buf[256];
     printf("\n=== 05 Kamar ===\nMasukkan ID pasien (0 batal): ");
     read_line(buf, sizeof(buf));
@@ -520,60 +542,219 @@ void kamar() {
     if (ch == 1) {
         append_history(p, "Masuk kamar / dirawat (check-in).");
         p->stage = ST_INROOM;
-        printf("Pasien check-in.\n");
+        loading_then_print("Pasien check-in.\n", 1);
     } else if (ch == 2) {
         append_history(p, "Keluar / pulang (check-out).");
         p->stage = ST_DISCHARGED;
-        printf("Pasien dipulangkan.\n");
+        loading_then_print("Pasien dipulangkan.\n", 1);
     } else {
         printf("Batal.\n");
     }
 }
 
-/* list / search */
-void list_patients() {
-    if (patient_count == 0) { printf("Belum ada pasien terdaftar.\n"); return; }
-    printf("\n=== Daftar Pasien ===\n");
-    for (int i = 0; i < patient_count; ++i) {
-        printf("[%d] ID:%lu Q:%d Name:%s | Stage:%s\n", i+1, patients[i].id, patients[i].queue_no, patients[i].name, stage_name(patients[i].stage));
+/* ----------------- POLI / Dokter ----------------- */
+void poli_doctor(void) {
+    char buf[512];
+    loading_then_print("\n=== 02 POLI/Dokter ===\n", 1);
+    printf("Masukkan nomor antrian pasien (0 batal): ");
+    read_line(buf, sizeof(buf));
+    int q = atoi(buf);
+    if (q == 0) return;
+
+    Patient *p = find_by_queue(q);
+    if (!p) { printf("Nomor antrian %d tidak ditemukan.\n", q); return; }
+
+    tampilkanRincian(p);
+    printf("Hasil pemeriksaan (satu baris): ");
+    read_line(buf, sizeof(buf));
+    if (buf[0]) append_history(p, buf);
+
+    printf("\n\n1=Rawat Jalan (obat)\n2=Rawat Inap\n3=Operasi (rawat inap)\n4=Rujuk ke RS lain\nPilih Keputusan dokter: ");
+    read_line(buf, sizeof(buf));
+    int k = atoi(buf);
+
+    if (k == 1) {
+        append_history(p, "Keputusan: Rawat jalan (resep obat).");
+
+        /* Jika BPJS, tidak perlu bayar, langsung ST_POLI_DONE lalu ke apotek otomatis */
+        if (p->paytype == PAY_BPJS) {
+            append_history(p, "POLI: pasien BPJS - pelayanan gratis (tidak minta pembayaran).");
+            p->stage = ST_POLI_DONE;
+            loading_then_print("Pasien BPJS � tidak perlu bayar pelayanan POLI. Langsung diarahkan ke Apotek.\n", 2);
+            apotek_process_for_patient(p);
+            return;
+        }
+
+        /* Mandiri, minta pembayaran poli */
+        int biaya = 50000;
+        char biaya_str[64];
+        formatRibuan(biaya, biaya_str, sizeof(biaya_str));
+        {
+            char s[128];
+            snprintf(s, sizeof(s), "Biaya pelayanan (poli + resep) = Rp. %s\nPembayaran lunas? (y/n): ", biaya_str);
+            print_with_line_pause(s);
+        }
+
+        read_line(buf, sizeof(buf));
+        if (!(buf[0]=='y' || buf[0]=='Y')) {
+            append_history(p, "Pembayaran POLI belum lunas.");
+            loading_then_print("Pembayaran belum lunas. Proses ditunda.\n", 1);
+            return;
+        }
+
+        append_history(p, "Pembayaran POLI lunas.");
+        p->stage = ST_POLI_DONE;
+        loading_then_print("Pasien diarahkan ke Apotek.\n", 1);
+
+        /* otomatis lanjut ke apotek untuk pasien Mandiri */
+        apotek_process_for_patient(p);
+        return;
+    }
+    else if (k == 2) {
+        append_history(p, "Keputusan: Rawat inap (masuk kamar).");
+        p->stage = ST_INROOM;
+        loading_then_print("Pasien perlu rawat inap. Mengarahkan ke kamar...\n", 1);
+
+        /* otomatis check-in kamar */
+        kamar_langsung(p);
+        return;
+    }
+    else if (k == 3) {
+        append_history(p, "Keputusan: Operasi (rawat inap).");
+        p->stage = ST_INROOM;
+        loading_then_print("Operasi: lanjut ke kamar (persiapan)...\n", 1);
+
+        kamar_langsung(p);
+        append_history(p, "Operasi: catatan persiapan operasi ditambahkan.");
+        return;
+    }
+    else if (k == 4) {
+        append_history(p, "Keputusan: Rujuk ke RS lain.");
+        p->stage = ST_DISCHARGED;
+        if (p->paytype == PAY_MANDIRI) {
+            append_history(p, "Rujuk: keluarkan nomor (Mandiri).");
+            char out[200];
+            snprintf(out, sizeof(out), "Output nomor rujukan (gunakan No Pembayaran/ID): %s\n", p->pay_no);
+            loading_then_print(out, 1);
+        } else {
+            append_history(p, "Rujuk: keluarkan nomor (BPJS).");
+            char out[200];
+            snprintf(out, sizeof(out), "Output nomor rujukan (BPJS): %s\n", p->pay_no);
+            loading_then_print(out, 1);
+        }
+        return;
+    }
+    else {
+        printf("Pilihan tidak valid.\n");
+        return;
     }
 }
-void search_name() {
+
+/* ----------------- Tes / Cek (DIUBAH: BPJS boleh ikut, tetapi TES tetap berbayar) ----------------- */
+void perform_test_choice(int type) {
+    char buf[512];
+    loading_then_print("\n=== 04 TES / CEK ===\n", 1);
+    printf("Masukkan nomor antrian pasien (0 batal): ");
+    read_line(buf, sizeof(buf));
+    int q = atoi(buf);
+    if (q == 0) return;
+    Patient *p = find_by_queue(q);
+    if (!p) { printf("Nomor antrian %d tidak ditemukan.\n", q); return; }
+
+    /* Tes boleh untuk Mandiri & BPJS. Namun TES tetap berbayar untuk kedua tipe. */
+    int biaya = (type == 1) ? 100000 : 200000;
+    const char *judul = (type == 1) ? "Tes Narkoba" : "Cek Kesehatan";
+    char biaya_str[64];
+    formatRibuan(biaya, biaya_str, sizeof(biaya_str));
+
+    {
+        char s[256];
+        snprintf(s, sizeof(s), "\n--- %s ---\nBiaya: Rp. %s\nPembayaran lunas? (y/n): ", judul, biaya_str);
+        print_with_line_pause(s);
+    }
+    read_line(buf, sizeof(buf));
+    if (!(buf[0]=='y' || buf[0]=='Y')) {
+        char t[256];
+        snprintf(t, sizeof(t), "%s: pembayaran belum lunas.", judul);
+        append_history(p, t);
+        loading_then_print("Pembayaran belum lunas. Proses dibatalkan.\n", 1);
+        return;
+    }
+
+    /* Jika lunas, lanjut input hasil */
+    char hasil[512];
+    printf("Masukkan kondisi/hasil pemeriksaan (satu baris): ");
+    read_line(hasil, sizeof(hasil));
+    if (hasil[0] == '\0') strcpy(hasil, "(tidak diisi)");
+    printf("\n");
+
+    char hist[768];
+    snprintf(hist, sizeof(hist), "%s hasil: %s | biaya Rp.%s | pembayaran lunas | TipePembayaran=%s",
+             judul, hasil, biaya_str, p->paytype==PAY_BPJS?"BPJS":"Mandiri");
+    append_history(p, hist);
+    p->stage = ST_TEST_DONE;
+
+    /* cetak surat bertahap dengan loading */
+    char surat[1024];
+    snprintf(surat, sizeof(surat),
+             "\n--- SURAT KETERANGAN %s ---\n"
+             "Nama                : %s\n"
+             "Umur                : %d\n"
+             "NIK / No Identitas  : %s\n"
+             "Nomor telepon       : %s\n"
+             "Hasil               : %s\n"
+             "Tipe Pembayaran     : %s\n"
+             "---------- End of Surat ----------\n",
+             (type==2?"HASIL CEK KESEHATAN":"HASIL TES NARKOBA"),
+             p->name, p->age, p->id_no[0] ? p->id_no : "(tidak ada)",
+             p->phone[0] ? p->phone : "(tidak ada)", hasil, p->paytype==PAY_BPJS?"BPJS":"Mandiri");
+    loading_then_print(surat, 3);
+
+    {
+        char done[128];
+        snprintf(done, sizeof(done), "\nTindakan %s selesai untuk pasien ID %lu\n", judul, p->id);
+        loading_then_print(done, 1);
+    }
+}
+
+/* ----------------- List / Search ----------------- */
+void list_patients(void) {
+    if (patient_count == 0) { loading_then_print("Belum ada pasien terdaftar.\n", 1); return; }
+    loading_then_print("\n=== Daftar Pasien ===\n", 1);
+    for (int i = 0; i < patient_count; ++i) {
+        char line[256];
+        snprintf(line, sizeof(line), "[%d] ID:%lu Q:%d Name:%s | Stage:%s\n",
+               i+1, patients[i].id, patients[i].queue_no, patients[i].name, stage_name(patients[i].stage));
+        print_with_line_pause(line);
+    }
+}
+
+void search_name(void) {
     char q[NAME_LEN];
     printf("Masukkan nama/substring: ");
     read_line(q, sizeof(q));
     int found = 0;
+    loading_then_print("Mencari...\n", 1);
     for (int i = 0; i < patient_count; ++i) {
         if (q[0] == '\0' || strstr(patients[i].name, q)) {
             tampilkanRincian(&patients[i]);
             found = 1;
         }
     }
-    if (!found) printf("Tidak ditemukan pasien dengan nama tersebut.\n");
+    if (!found) loading_then_print("Tidak ditemukan pasien dengan nama tersebut.\n", 1);
 }
 
-/* kecil setelah apotek/kamar */
-void post_action_menu_after_apotek_or_kamar() {
-    char buf[32];
-    printf("\nSetelah tindakan, pilih:\n1: list_patients()\n2: search_name()\n3: simpan (demo)\nPilih: ");
-    read_line(buf, sizeof(buf));
-    int x = atoi(buf);
-    if (x == 1) list_patients();
-    else if (x == 2) search_name();
-    else if (x == 3) printf("Simpan: (demo) -- fitur dapat ditambahkan nanti.\n");
-    else printf("Pilihan tidak valid.\n");
-}
-
-/* tindakan_menu sesuai rancangan: hanya 02 (Poli) dan 04 (Tes) dengan prompt Pilih 02/04.
-   Submenu Tes meminta Pilih 01/02 sesuai rancangan. */
-void tindakan_menu() {
+/* ----------------- Tindakan menu (02/04) ----------------- */
+void tindakan_menu(void) {
     char buf[32];
     while (1) {
         printf("\nTindakan yang dipilih:\n");
         printf("02: POLI/Dokter\n");
         printf("04: Tes / Cek\n");
+        printf("03: Apotek (manual)\n");
+        printf("05: Kamar (manual)\n");
         printf("0: Kembali\n");
-        printf("Pilih 02/04: ");
+        printf("Pilih 02/04/03/05: ");
         read_line(buf, sizeof(buf));
         if (strcmp(buf, "0") == 0) return;
         if (strcmp(buf, "02") == 0 || strcmp(buf, "2") == 0) {
@@ -586,35 +767,21 @@ void tindakan_menu() {
             printf("Pilih 01/02: ");
             read_line(buf, sizeof(buf));
             if (strcmp(buf, "0") == 0) continue;
-            if (strcmp(buf, "01") == 0 || strcmp(buf, "1") == 0) {
-                perform_test_choice(1);
-            } else if (strcmp(buf, "02") == 0 || strcmp(buf, "2") == 0) {
-                perform_test_choice(2);
-            } else {
-                printf("Pilihan tidak valid.\n");
-            }
+            if (strcmp(buf, "01") == 0 || strcmp(buf, "1") == 0) perform_test_choice(1);
+            else if (strcmp(buf, "02") == 0 || strcmp(buf, "2") == 0) perform_test_choice(2);
+            else printf("Pilihan tidak valid.\n");
+        } else if (strcmp(buf, "03") == 0 || strcmp(buf, "3") == 0) {
+            apotek();
+        } else if (strcmp(buf, "05") == 0 || strcmp(buf, "5") == 0) {
+            kamar();
         } else {
-            printf("Pilihan tidak valid. Masukkan 02 atau 04.\n");
+            printf("Pilihan tidak valid. Masukkan 02 atau 04 atau 03 atau 05.\n");
         }
     }
 }
 
-/* login sederhana */
-int login() {
-    char user[32], pass[32];
-    int attempts = 3;
-    while (attempts-- > 0) {
-        printf("\nUser: ");
-        read_line(user, sizeof(user));
-        printf("Password: ");
-        read_line(pass, sizeof(pass));
-        if (is_valid_worker(user, pass)) return 1;
-        printf("Login salah. Sisa percobaan: %d\n", attempts);
-    }
-    return 0;
-}
-
-void print_main_menu() {
+/* ----------------- Menuuh utamahh ----------------- */
+void print_main_menu(void) {
     printf("\n--- Menu Utama ---\n");
     printf("1: Pendaftaran\n");
     printf("2: Tindakan (02/04)\n");
@@ -622,13 +789,12 @@ void print_main_menu() {
     printf("0: Keluar\n");
 }
 
-int main() {
-    char buf[32];
+int main(void) {
+    char buf[64];
 
-    printf("===== SISTEM PELAYANAN MEDICARE X =====\n\n");
+    loading_then_print("===== SISTEM PELAYANAN MEDICARE X =====\n\n", 2);
     printf("Login Pegawai Medicare X\n");
-    if (!login()) { printf("Login gagal. Program keluar.\n"); return 0; }
-    printf("Login berhasil. Lanjut ke sistem.\n");
+    if (!login()) { loading_then_print("Login gagal. Program keluar.\n", 1); return 0; }
 
     while (1) {
         print_main_menu();
@@ -636,7 +802,7 @@ int main() {
         read_line(buf, sizeof(buf));
         int opt = atoi(buf);
         if (opt == 0) {
-            printf("Selesai. Sampai jumpa � semoga tetap sehat.\n");
+            loading_then_print("Selesai. Sampai jumpa :) \n semoga tetap sehat yaww \n", 2);
             return 0;
         }
         switch (opt) {
