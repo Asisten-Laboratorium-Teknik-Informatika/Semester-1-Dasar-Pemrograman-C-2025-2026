@@ -1,96 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-
-#define MAX_KATEGORI_WANITA 6
-#define MAX_KATEGORI_PRIA 5
-#define MAX_PER_CATEGORY 10
-#define MAX_PILIHAN 50
-#define MAX_STR_LEN 100
 
 typedef struct {
-    char nama[MAX_STR_LEN];
+    char nama[100];
     int harga;
 } Layanan;
 
-/* Data layanan (sama seperti yang kamu berikan) */
-Layanan kategoriWanita[MAX_KATEGORI_WANITA][MAX_PER_CATEGORY] = {
+Layanan kategoriWanita[6][10] = {
+    // 1. Hair treatment
     {{"Cuci & Blow", 60000}, {"Potong Rambut", 50000}, {"Smoothing / Rebonding / Keratin / Hair Botox", 200000}, {"Hair Coloring / Bleaching / Highlight", 100000}, {"Hair Mask / Creambath / Hair Spa", 100000}, {"Hair Extension", 75000}, {"Hair Toning", 30000}},
+    // 2. Nail care
     {{"Manicure", 50000}, {"Pedicure", 50000}, {"Nail Art", 100000}, {"Gel Polish / Nail Extension", 150000}},
+    // 3. Face treatment
     {{"Facial", 45000}, {"Masker Wajah / Face Spa", 20000}, {"Totok Wajah", 25000}, {"Eyebrow Shaping", 25000}, {"Eyelash Extension / Lash Lift", 50000}},
+    // 4. Makeup and styling
     {{"Makeup Harian / Pesta / Wisuda / Pengantin", 250000}, {"Hair Styling (Sanggul, Curly, Blow Out)", 250000}, {"Makeup + Hijab Styling untuk Acara Formal", 200000}},
+    // 5. Body treatment
     {{"Body Scrub / Lulur", 50000}, {"Body Spa", 25000}, {"Massage (Pijat)", 25000}, {"Body Whitening / Bleaching", 400000}, {"Waxing / Threading", 200000}},
+    // 6. Layanan tambahan
     {{"Ear Candling", 100000}, {"Tanning", 1000000}, {"Piercing", 300000}, {"Rias Pengantin & Paket Wedding", 2000000}, {"Paket Perawatan Lengkap (Hair + Face + Body Spa)", 500000}}
 };
-int jumlahPerKategoriWanita[MAX_KATEGORI_WANITA] = {7, 4, 5, 3, 5, 5};
+int jumlahPerKategoriWanita[6] = {7, 4, 5, 3, 5, 5};
 
-Layanan kategoriPria[MAX_KATEGORI_PRIA][MAX_PER_CATEGORY] = {
+Layanan kategoriPria[5][10] = {
+    // 1. Hair treatment
     {{"Haircut / Potong Rambut", 25000}, {"Hair Wash & Styling", 25000}, {"Hair Spa / Creambath", 50000}, {"Perawatan Rambut Rontok", 100000}, {"Hair Coloring / Highlight", 50000}, {"Smoothing / Perm", 100000}},
+    // 2. Face treatment
     {{"Facial Pria", 50000}, {"Totok Wajah / Face Massage", 50000}, {"Masker Wajah", 40000}, {"Perapian Alis / Jenggot", 45000}},
+    // 3. Body treatment
     {{"Body Massage", 300000}, {"Body Scrub / Lulur", 15000}, {"Body Spa", 100000}, {"Body Whitening / Brightening", 100000}},
+    // 4. Grooming & layanan tambahan
     {{"Shaving (Cukur Kumis, Jenggot, Cambang)", 75000}, {"Ear Cleaning (Membersihkan Telinga)", 45000}, {"Manicure / Pedicure untuk Pria", 40000}, {"Hair Tattoo / Desain Cukuran", 35000}},
+    // 5. Paket lengkap pria
     {{"Men’s Relax Package (Haircut + Facial + Massage + Hair Spa)", 300000}}
 };
-int jumlahPerKategoriPria[MAX_KATEGORI_PRIA] = {6, 4, 4, 4, 1};
-
-/* Utility: trim newline */
-void trim_newline(char *s) {
-    size_t len = strlen(s);
-    if (len == 0) return;
-    if (s[len - 1] == '\n') s[len - 1] = '\0';
-}
-
-
-void read_line(const char *prompt, char *out, size_t out_size) {
-    if (prompt) printf("%s", prompt);
-    if (fgets(out, (int)out_size, stdin) == NULL) {
-        out[0] = '\0';
-        return;
-    }
-    trim_newline(out);
-}
-
-
-int read_int(const char *prompt) {
-    char buf[64];
-    char *endptr;
-    long val;
-    while (1) {
-        if (prompt) printf("%s", prompt);
-        if (fgets(buf, sizeof(buf), stdin) == NULL) {
-            printf("Input error. Coba lagi.\n");
-            continue;
-        }
-        trim_newline(buf);
-        if (buf[0] == '\0') {
-            printf("Input kosong. Masukkan angka.\n");
-            continue;
-        }
-        val = strtol(buf, &endptr, 10);
-        if (*endptr != '\0') {
-            printf("Format tidak valid. Masukkan angka bulat.\n");
-            continue;
-        }
-        return (int)val;
-    }
-}
-
-
-void strtolower_copy(const char *src, char *dst, size_t dst_size) {
-    size_t i;
-    for (i = 0; i + 1 < dst_size && src[i] != '\0'; ++i) {
-        dst[i] = (char)tolower((unsigned char)src[i]);
-    }
-    dst[i] = '\0';
-}
-
+int jumlahPerKategoriPria[5] = {6, 4, 4, 4, 1};
 
 int login(char *namaKasir) {
-    char username[64], password[64];
+    char username[50], password[50];
     printf("=== LOGIN KASIR ===\n");
-    read_line("Username: ", username, sizeof(username));
-    read_line("Password: ", password, sizeof(password));
+    printf("Username: ");
+    scanf("%s", username);
+    printf("Password: ");
+    scanf("%s", password);
 
     if (strcmp(username, "tia") == 0 && strcmp(password, "251712044") == 0) {
         strcpy(namaKasir, "tia");
@@ -109,56 +62,50 @@ int login(char *namaKasir) {
         printf("Login berhasil!\n\n");
         return 1;
     } else {
-        printf("Username atau password salah!\n\n");
+        printf("Username atau password salah!\n");
         return 0;
     }
 }
 
-/* Fungsi memilih kategori dan layanan (lebih aman) */
-void pilihKategoriDanLayanan(Layanan kategori[][MAX_PER_CATEGORY], int jumlahKategori, int jumlahPerKategori[], char pilihanLayanan[][MAX_STR_LEN], int *total, int *jumlahPilihan, char namaKategori[][50]) {
+void pilihKategoriDanLayanan(Layanan kategori[][10], int jumlahKategori, int jumlahPerKategori[], char pilihanLayanan[][100], int *total, int *jumlahPilihan, char namaKategori[][50]) {
+    int kategoriPilih;
     while (1) {
         printf("\nPilih kategori layanan (1-%d, 0 untuk selesai):\n", jumlahKategori);
         for (int i = 0; i < jumlahKategori; i++) {
-            printf("%d. %s\n", i + 1, namaKategori[i]);
+            printf("%d. %s\n", i+1, namaKategori[i]);
         }
-        int kategoriPilih = read_int("Pilihan: ");
+        printf("Pilihan: ");
+        scanf("%d", &kategoriPilih);
         if (kategoriPilih == 0) break;
         if (kategoriPilih < 1 || kategoriPilih > jumlahKategori) {
-            printf("Pilihan kategori tidak valid!\n");
+            printf("Pilihan tidak valid!\n");
             continue;
         }
 
-        int idxKategori = kategoriPilih - 1;
-        printf("\nLayanan dalam %s:\n", namaKategori[idxKategori]);
-        for (int i = 0; i < jumlahPerKategori[idxKategori]; i++) {
-            printf("%d. %s - Rp %d\n", i + 1, kategori[idxKategori][i].nama, kategori[idxKategori][i].harga);
+        printf("\nLayanan dalam %s:\n", namaKategori[kategoriPilih-1]);
+        for (int i = 0; i < jumlahPerKategori[kategoriPilih-1]; i++) {
+            printf("%d. %s - Rp %d\n", i+1, kategori[kategoriPilih-1][i].nama, kategori[kategoriPilih-1][i].harga);
         }
 
+        int layananPilih;
         while (1) {
-            int layananPilih = read_int("Pilih layanan (masukkan nomor, 0 untuk kembali ke kategori): ");
+            printf("Pilih layanan (masukkan nomor, 0 untuk kembali ke kategori):\n");
+            printf("Pilihan: ");
+            scanf("%d", &layananPilih);
             if (layananPilih == 0) break;
-            if (layananPilih < 1 || layananPilih > jumlahPerKategori[idxKategori]) {
-                printf("Pilihan layanan tidak valid!\n");
+            if (layananPilih < 1 || layananPilih > jumlahPerKategori[kategoriPilih-1]) {
+                printf("Pilihan tidak valid!\n");
                 continue;
             }
-
-            if (*jumlahPilihan >= MAX_PILIHAN) {
-                printf("Maksimum pilihan layanan (%d) tercapai. Tidak bisa menambah lagi.\n", MAX_PILIHAN);
-                return;
-            }
-
-            /* copy nama layanan dengan batas */
-            strncpy(pilihanLayanan[*jumlahPilihan], kategori[idxKategori][layananPilih - 1].nama, MAX_STR_LEN - 1);
-            pilihanLayanan[*jumlahPilihan][MAX_STR_LEN - 1] = '\0';
-
-            *total += kategori[idxKategori][layananPilih - 1].harga;
+            strcpy(pilihanLayanan[*jumlahPilihan], kategori[kategoriPilih-1][layananPilih-1].nama);
+            *total += kategori[kategoriPilih-1][layananPilih-1].harga;
             (*jumlahPilihan)++;
-            printf("Layanan '%s' ditambahkan. Total sementara: Rp %d\n", kategori[idxKategori][layananPilih - 1].nama, *total);
+            printf("Layanan '%s' ditambahkan. Total sementara: Rp %d\n", kategori[kategoriPilih-1][layananPilih-1].nama, *total);
         }
     }
 }
 
-void cetakStruk(char namaCustomer[], int umur, char gender[], char pilihanLayanan[][MAX_STR_LEN], int jumlahPilihan, int total, char metode[], int uangDiterima, int kembalian, char namaKasir[]) {
+void cetakStruk(char namaCustomer[], int umur, char gender[], char pilihanLayanan[][100], int jumlahPilihan, int total, char metode[], int uangDiterima, int kembalian, char namaKasir[]) {
     printf("\n\n=== STRUK TRANSAKSI SALON ===\n");
     printf("Nama Kasir: %s\n", namaKasir);
     printf("Nama Customer: %s\n", namaCustomer);
@@ -173,13 +120,11 @@ void cetakStruk(char namaCustomer[], int umur, char gender[], char pilihanLayana
     if (strcmp(metode, "cash") == 0 || strcmp(metode, "Cash") == 0) {
         printf("Uang Diterima: Rp %d\n", uangDiterima);
         printf("Kembalian: Rp %d\n", kembalian);
-    } else {
-        printf("(Pembayaran dilakukan via transfer)\n");
     }
     printf("Terima kasih telah berkunjung!\n");
 }
 
-int main(void) {
+int main() {
     char namaKasir[50];
     int loginBerhasil = 0;
     for (int attempt = 0; attempt < 3; attempt++) {
@@ -196,47 +141,45 @@ int main(void) {
         return 0;
     }
 
-    char namaCustomer[50], gender[20], metode[20];
-    int umur = 0, total = 0, jumlahPilihan = 0;
-    static char pilihanLayanan[MAX_PILIHAN][MAX_STR_LEN];
+    char namaCustomer[50], gender[10];
+    int umur, total = 0, jumlahPilihan = 0;
+    char pilihanLayanan[50][100];
 
-    read_line("Masukkan nama customer: ", namaCustomer, sizeof(namaCustomer));
-    umur = read_int("Masukkan umur customer: ");
-    read_line("Pilih gender (Pria/Wanita): ", gender, sizeof(gender));
+    printf("Masukkan nama customer: ");
+    scanf("%s", namaCustomer);
+    printf("Masukkan umur customer: ");
+    scanf("%d", &umur);
+    printf("Pilih gender (Pria/Wanita): ");
+    scanf("%s", gender);
 
-    char namaKategoriWanita[MAX_KATEGORI_WANITA][50] = {"Hair treatment", "Nail care", "Face treatment", "Makeup and styling", "Body treatment", "Layanan tambahan"};
-    char namaKategoriPria[MAX_KATEGORI_PRIA][50] = {"Hair treatment", "Face treatment", "Body treatment", "Grooming & layanan tambahan", "Paket lengkap pria"};
-
-    char genderLower[20];
-    strtolower_copy(gender, genderLower, sizeof(genderLower));
-
-    if (strcmp(genderLower, "wanita") == 0 || strcmp(genderLower, "woman") == 0) {
-        pilihKategoriDanLayanan(kategoriWanita, MAX_KATEGORI_WANITA, jumlahPerKategoriWanita, pilihanLayanan, &total, &jumlahPilihan, namaKategoriWanita);
-    } else if (strcmp(genderLower, "pria") == 0 || strcmp(genderLower, "male") == 0) {
-        pilihKategoriDanLayanan(kategoriPria, MAX_KATEGORI_PRIA, jumlahPerKategoriPria, pilihanLayanan, &total, &jumlahPilihan, namaKategoriPria);
+    if (strcmp(gender, "Wanita") == 0 || strcmp(gender, "wanita") == 0) {
+        char namaKategoriWanita[6][50] = {"Hair treatment", "Nail care", "Face treatment", "Makeup and styling", "Body treatment", "Layanan tambahan"};
+        pilihKategoriDanLayanan(kategoriWanita, 6, jumlahPerKategoriWanita, pilihanLayanan, &total, &jumlahPilihan, namaKategoriWanita);
+    } else if (strcmp(gender, "Pria") == 0 || strcmp(gender, "pria") == 0) {
+        char namaKategoriPria[5][50] = {"Hair treatment", "Face treatment", "Body treatment", "Grooming & layanan tambahan", "Paket lengkap pria"};
+        pilihKategoriDanLayanan(kategoriPria, 5, jumlahPerKategoriPria, pilihanLayanan, &total, &jumlahPilihan, namaKategoriPria);
     } else {
-        printf("Gender tidak valid! Harus 'Pria' atau 'Wanita'. Program selesai.\n");
+        printf("Gender tidak valid!\n");
         return 0;
     }
 
-    read_line("\nPilih metode pembayaran (transfer/cash): ", metode, sizeof(metode));
-    char metodeLower[20];
-    strtolower_copy(metode, metodeLower, sizeof(metodeLower));
+    char metode[10];
     int uangDiterima = 0, kembalian = 0;
-
-    if (strcmp(metodeLower, "cash") == 0) {
+    printf("\nPilih metode pembayaran (transfer/cash): ");
+    scanf("%s", metode);
+    if (strcmp(metode, "cash") == 0 || strcmp(metode, "Cash") == 0) {
         do {
-            uangDiterima = read_int("Masukkan jumlah uang yang diterima: ");
+            printf("Masukkan jumlah uang yang diterima: ");
+            scanf("%d", &uangDiterima);
             if (uangDiterima < total) {
                 printf("Uang tidak cukup! Silakan masukkan jumlah yang lebih besar.\n");
             }
         } while (uangDiterima < total);
         kembalian = uangDiterima - total;
-    } else if (strcmp(metodeLower, "transfer") == 0) {
-
-        printf("Pilih transfer: pastikan customer melakukan transfer ke rekening salon.\n");
+    } else if (strcmp(metode, "transfer") == 0 || strcmp(metode, "Transfer") == 0) {
+       
     } else {
-        printf("Metode pembayaran tidak valid! Program selesai.\n");
+        printf("Metode pembayaran tidak valid!\n");
         return 0;
     }
 
@@ -244,4 +187,3 @@ int main(void) {
 
     return 0;
 }
-
