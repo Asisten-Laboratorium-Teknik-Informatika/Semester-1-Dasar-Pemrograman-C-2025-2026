@@ -4,7 +4,6 @@
 #include <stdlib.h>  // system()
 
 #define MAX_ALARM 10
-
 struct Alarm {
     int jam;
     int menit;
@@ -14,14 +13,14 @@ struct Alarm {
 struct Alarm alarmList[MAX_ALARM];
 int totalAlarm = 0;
 
-// ================= FUNGSI =================
 
 void displayTime() {
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
-    printf("\r⏰ %02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
+    printf("\r%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
     fflush(stdout);
 }
+
 
 int checkAlarm() {
     time_t now = time(NULL);
@@ -32,23 +31,23 @@ int checkAlarm() {
             t->tm_min  == alarmList[i].menit &&
             t->tm_sec  == alarmList[i].detik) {
 
-            printf("\n\n🔔 Alarm Berbunyi! Waktu %02d:%02d:%02d 🔔\n",
+            printf("\n\nAlarm Berbunyi! Waktu %02d:%02d:%02d\n",
                     alarmList[i].jam, alarmList[i].menit, alarmList[i].detik);
 
-            // 🔊 Bunyi alarm 30 detik (0.2 detik per beep)
+            // Bunyi alarm 30 detik (0.2 detik per beep)
             for(int b = 0; b < 20; b++) {
                 printf("\a");              // bunyi beep
-                printf("🔔");              // tampilan ikon
                 fflush(stdout);
                 usleep(3000);            // 0.003 detik
             }
 
             printf("\nAlarm selesai!\n");
-            return 1; // alarm selesai berbunyi
+            return 1;
         }
     }
-    return 0; // tidak ada alarm
+    return 0;
 }
+
 
 void tambahAlarm() {
     if(totalAlarm >= MAX_ALARM) {
@@ -63,6 +62,7 @@ void tambahAlarm() {
     printf("Alarm ditambahkan!\n");
 }
 
+
 void lihatAlarm() {
     if(totalAlarm == 0) {
         printf("Tidak ada alarm yang disimpan.\n");
@@ -74,6 +74,7 @@ void lihatAlarm() {
                 alarmList[i].jam, alarmList[i].menit, alarmList[i].detik);
     }
 }
+
 
 void editAlarm() {
     lihatAlarm();
@@ -95,6 +96,7 @@ void editAlarm() {
     printf("Alarm telah diperbarui!\n");
 }
 
+
 void hapusAlarm() {
     lihatAlarm();
     if(totalAlarm == 0) return;
@@ -112,14 +114,15 @@ void hapusAlarm() {
         alarmList[i] = alarmList[i+1];
     }
     totalAlarm--;
-    printf("✔ Alarm telah dihapus!\n");
+    printf("Alarm telah dihapus!\n");
 }
+
 
 void mulaiAlarm() {
     char pilih;
 
     printf("\n=============== Alarm Aktif  ===============\n");
-    printf("Tekan CTRL + C untuk berhenti.\n\n");
+    printf("\n\n");
 
     while(1) {
         displayTime();
@@ -136,7 +139,6 @@ void mulaiAlarm() {
     }
 }
 
-// ================= MAIN =================
 
 int main() {
     int pilih;
@@ -165,4 +167,5 @@ int main() {
 
     return 0;
 }
+
 
