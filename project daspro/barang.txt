@@ -1,0 +1,7 @@
+Beras|Makanan Pokok|15000|41
+Gula|Makanan Pokok|5000|25
+Minyak Goreng|Makanan Pokok|10000|40
+Teh|Minuman|5000|20
+Kopi|Minuman|2000|20
+Sabun|Kebutuhan Rumah Tangga|3000|60
+Shampoo|Kebutuhan Rumah Tangga|1000|5
