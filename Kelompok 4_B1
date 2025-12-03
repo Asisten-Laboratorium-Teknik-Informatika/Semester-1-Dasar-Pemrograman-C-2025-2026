@@ -1,0 +1,171 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <windows.h>
+
+#define MAKS 100
+
+HANDLE hConsole;
+
+// Fungsi warna
+void warna(int kode) {
+    SetConsoleTextAttribute(hConsole, kode);
+}
+
+// =============================
+// DATA KATA PER LEVEL
+// =============================
+char *mudah[]  = {"kucing", "rumah", "meja", "apel"};
+char *sedang[] = {"kantor", "sepeda", "komputer"};
+char *sulit[]  = {"universitas", "arsitektur", "perpustakaan"};
+
+int jm_mudah  = 4;
+int jm_sedang = 3;
+int jm_sulit  = 3;
+
+// =============================
+// SINGLEPLAYER
+// =============================
+void singleplayer() {
+    int level;
+    char *kata;
+    char tebakan[MAKS];
+    int kesempatan = 3;
+
+    warna(11);
+    printf("=== SINGLEPLAYER ===\n");
+    warna(7);
+
+    printf("Pilih level:\n");
+    printf("1. Mudah\n");
+    printf("2. Sedang\n");
+    printf("3. Sulit\n");
+    printf("Level: ");
+    scanf("%d", &level);
+    getchar();
+
+    if (level == 1) kata = mudah[rand() % jm_mudah];
+    else if (level == 2) kata = sedang[rand() % jm_sedang];
+    else kata = sulit[rand() % jm_sulit];
+
+    printf("\nClue:\n");
+    printf("- Panjang kata: %d huruf\n", strlen(kata));
+    printf("- Huruf pertama: %c\n", kata[0]);
+    printf("- Huruf terakhir: %c\n\n", kata[strlen(kata)-1]);
+
+    while (kesempatan > 0) {
+        printf("Kesempatan %d\n", kesempatan);
+        printf("Tebakan: ");
+        fgets(tebakan, MAKS, stdin);
+        tebakan[strcspn(tebakan, "\n")] = 0;
+
+        if (strcmp(tebakan, kata) == 0) {
+            warna(10);
+            printf("Benar! Kamu menang!\n");
+            warna(7);
+            return;
+        } else {
+            warna(12);
+            printf("Salah!\n");
+            warna(7);
+            kesempatan--;
+        }
+    }
+
+    warna(12);
+    printf("\nKamu kalah... Kata yang benar: %s\n", kata);
+    warna(7);
+}
+
+// =============================
+// MULTIPLAYER
+// =============================
+void multiplayer() {
+    char kata[MAKS];
+    char tebakan[MAKS];
+    int kesempatan = 3;
+
+    warna(11);
+    printf("=== MULTIPLAYER ===\n");
+    warna(7);
+
+    printf("Player 1, masukkan kata rahasia: ");
+    fgets(kata, MAKS, stdin);
+    kata[strcspn(kata, "\n")] = 0;
+
+    system("cls");
+
+    printf("PLAYER 2 MENEBak KATA!\n\n");
+    printf("Clue:\n");
+    printf("- Panjang: %d huruf\n", strlen(kata));
+    printf("- Huruf pertama: %c\n\n", kata[0]);
+
+    while (kesempatan > 0) {
+        printf("Kesempatan %d\n", kesempatan);
+        printf("Tebakan: ");
+        fgets(tebakan, MAKS, stdin);
+        tebakan[strcspn(tebakan, "\n")] = 0;
+
+        if (strcmp(tebakan, kata) == 0) {
+            warna(10);
+            printf("Benar! Player 2 menang!\n");
+            warna(7);
+            return;
+        } else {
+            warna(12);
+            printf("Salah!\n");
+            warna(7);
+            kesempatan--;
+        }
+    }
+
+    warna(12);
+    printf("\nPlayer 2 kalah... Jawaban: %s\n", kata);
+    warna(7);
+}
+
+// =============================
+// PROGRAM UTAMA
+// =============================
+int main() {
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    srand(time(NULL));
+
+    int pilih;
+
+    while (1) {
+        system("cls");
+        warna(11);
+        printf("=== GAME TEBAK KATA ===\n");
+        warna(7);
+
+        printf("1. Singleplayer\n");
+        printf("2. Multiplayer\n");
+        printf("3. Keluar\n");
+        printf("Pilih: ");
+        scanf("%d", &pilih);
+        getchar();
+
+        system("cls");
+
+        if (pilih == 1) {
+            singleplayer();
+        }
+        else if (pilih == 2) {
+            multiplayer();
+        }
+        else if (pilih == 3) {
+            printf("Keluar...\n");
+            break;
+        }
+        else {
+            printf("Pilihan tidak valid.\n");
+        }
+
+        printf("\nTekan Enter untuk kembali...");
+        getchar();
+    }
+
+    return 0;
+}
